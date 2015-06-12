@@ -2,6 +2,8 @@
 
 tango_with_django_project used for back-bone template for our project
  * now runs on Django 1.8 with Python 2.7.5
+ * admin id: admin0
+ * admin pw: 0000
  * when the server is run, terminal complains "No manage.py file specified in Settings->Django Support". this should be resolved
  
 URLs that tango_with_django_project can redirect to 
