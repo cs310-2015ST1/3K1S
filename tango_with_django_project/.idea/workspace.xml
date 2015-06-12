@@ -31,11 +31,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/rango/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="159" max-vertical-offset="1830">
+              <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/tango_with_django_project/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1285" max-vertical-offset="1770">
+            <state vertical-scroll-proportion="0.0" vertical-offset="780" max-vertical-offset="1770">
               <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="add_page.html" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/add_page.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-15.625" vertical-offset="0" max-vertical-offset="540">
+              <caret line="25" column="23" selection-start-line="25" selection-start-column="23" selection-end-line="25" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -45,19 +67,37 @@
         <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/manage.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="240">
-              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-              <folding>
-                <element signature="e#22#31#0" expanded="true" />
-              </folding>
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="true">
-        <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/tango_with_django_project/urls.py">
+      <file leaf-file-name="category.html" pinned="false" current-in-tab="true">
+        <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/category.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3529412" vertical-offset="0" max-vertical-offset="510">
-              <caret line="14" column="1" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
+            <state vertical-scroll-proportion="0.43209878" vertical-offset="0" max-vertical-offset="486">
+              <caret line="14" column="16" selection-start-line="14" selection-start-column="16" selection-end-line="14" selection-end-column="16" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="populate_rango.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/populate_rango.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1170">
+              <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-22.125" vertical-offset="9" max-vertical-offset="675">
+              <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -83,6 +123,8 @@
         <option value="$PROJECT_DIR$/templates/rango/category.html" />
         <option value="$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/tango_with_django_project/urls.py" />
         <option value="$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/tango_with_django_project/settings.py" />
+        <option value="$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/add_page.html" />
+        <option value="$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/category.html" />
       </list>
     </option>
   </component>
@@ -574,7 +616,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="3" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -897,28 +939,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/populate_rango.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1170">
-          <caret line="21" column="17" selection-start-line="21" selection-start-column="17" selection-end-line="21" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/add_category.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.28125" vertical-offset="0" max-vertical-offset="480">
           <caret line="9" column="77" selection-start-line="9" selection-start-column="77" selection-end-line="9" selection-end-column="77" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/rango/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3392857" vertical-offset="1179" max-vertical-offset="1830">
-          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -932,14 +957,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/add_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.21875" vertical-offset="45" max-vertical-offset="540">
-          <caret line="10" column="92" selection-start-line="10" selection-start-column="92" selection-end-line="10" selection-end-column="92" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/rango/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.64285713" vertical-offset="21" max-vertical-offset="525">
@@ -947,22 +964,6 @@
           <folding>
             <element signature="e#0#15#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/category.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34375" vertical-offset="0" max-vertical-offset="480">
-          <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.71875" vertical-offset="195" max-vertical-offset="675">
-          <caret line="36" column="67" selection-start-line="36" selection-start-column="67" selection-end-line="36" selection-end-column="67" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -976,10 +977,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/tango_with_django_project/settings.py">
+    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/tango_with_django_project/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1285" max-vertical-offset="1770">
-          <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.3529412" vertical-offset="0" max-vertical-offset="510">
+          <caret line="14" column="1" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
           <folding />
         </state>
       </provider>
@@ -987,17 +988,57 @@
     <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/manage.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="240">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/populate_rango.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1170">
+          <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/tango_with_django_project/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="780" max-vertical-offset="1770">
+          <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/rango/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="159" max-vertical-offset="1830">
+          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
           <folding>
-            <element signature="e#22#31#0" expanded="true" />
+            <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/tango_with_django_project/urls.py">
+    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/add_page.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3529412" vertical-offset="0" max-vertical-offset="510">
-          <caret line="14" column="1" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
+        <state vertical-scroll-proportion="-15.625" vertical-offset="0" max-vertical-offset="540">
+          <caret line="25" column="23" selection-start-line="25" selection-start-column="23" selection-end-line="25" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-22.125" vertical-offset="9" max-vertical-offset="675">
+          <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/templates/rango/category.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43209878" vertical-offset="0" max-vertical-offset="486">
+          <caret line="14" column="16" selection-start-line="14" selection-start-column="16" selection-end-line="14" selection-end-column="16" />
           <folding />
         </state>
       </provider>
