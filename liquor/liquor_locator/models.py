@@ -27,7 +27,7 @@ class Page(models.Model):
         return self.title       #methods analogous to the toString() method in a Java
 
 class LiquorStore(models.Model):
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128, default="NA")
     address = models.CharField(max_length=128, unique=True)
     latlon = models.CharField(max_length=64, unique=True)
     storetype = models.CharField(max_length=64, blank=True)
