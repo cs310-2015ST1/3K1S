@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/git/3K1S/liquor/.idea/liquor.iml" filepath="$USER_HOME$/git/3K1S/liquor/.idea/liquor.iml" />
-      <module fileurl="file://$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/.idea/tango_with_django_project.iml" filepath="$USER_HOME$/Dropbox/ubc/2015_Summer/CPSC310/2_project/djangoProjects/tango_with_django_project/.idea/tango_with_django_project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/liquor.iml" filepath="$PROJECT_DIR$/.idea/liquor.iml" />
     </modules>
   </component>
 </project>
