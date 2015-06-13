@@ -26,4 +26,11 @@ class Page(models.Model):
     def __unicode__(self):      #For Python 2, use __str__ on Python 3
         return self.title       #methods analogous to the toString() method in a Java
 
+class LiquorStore(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+    address = models.CharField(max_length=128, unique=True)
+    latlon = models.CharField(max_length=64, unique=True)
+    storetype = models.CharField(max_length=64, blank=True)
 
+    def __unicode__(self):
+        return self.name
