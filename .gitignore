@@ -4,7 +4,6 @@
 
 ## Directory-based project format:
 .idea/
-/liquor/.idea/
 
 # if you remove the above rule, at least ignore the following:
 
