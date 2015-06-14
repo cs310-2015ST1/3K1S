@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from liquor_locator.models import Category
 from liquor_locator.models import Page
+from liquor_locator.models import LiquorStore
 from liquor_locator.forms import CategoryForm
 from liquor_locator.forms import PageForm
 
@@ -20,13 +21,11 @@ def index(request):
     # Order the categories by no. likes in descending order.
     # Retrieve the top 5 only - or all if less than 5.
     # Place the list in our context_dict dictionary which will be passed to the template engine.
-    category_list = Category.objects.order_by('-likes')[:5]
-    mostviewed_list = Page.objects.order_by('-views')[:5]
-    context_dict = {'categories': category_list, 'mostviewed' : mostviewed_list}
 
-    # Render the response and send it back!
+    liquorstore_list = list(LiquorStore.objects.all())
+    context_dict = {'liquorstores': liquorstore_list}
+    
     return render(request, 'liquor_locator/index.html', context_dict)
-
 
 def about(request):
     context_dict = {'message' : "About Page"}

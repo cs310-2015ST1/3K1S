@@ -29,7 +29,8 @@ class Page(models.Model):
 class LiquorStore(models.Model):
     name = models.CharField(max_length=128, unique=True)
     address = models.CharField(max_length=128, unique=True)
-    latlon = models.CharField(max_length=64, unique=True)
+    lat = models.CharField(max_length=64, blank=True)
+    lon = models.CharField(max_length=64, blank=True)
     storetype = models.CharField(max_length=64, blank=True)
 
     def __unicode__(self):
