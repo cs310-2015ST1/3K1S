@@ -76,11 +76,11 @@ def add_category(request):
 
             # Now call the index() view.
             # The user will be shown the homepage.
-            print cat, cat.slug
+            print(cat, cat.slug)
             return index(request)
         else:
             # The supplied form contained errors - just print them to the terminal.
-            print form.errors
+            print(form.errors)
     else:
         # If the request was not a POST, display the form to enter details.
         form = CategoryForm()
@@ -108,7 +108,7 @@ def add_page(request, category_name_slug):
                 # probably better to use a redirect here.
                 return category(request, category_name_slug)
         else:
-            print form.errors
+            print(form.errors)
     else:
         form = PageForm()
 
