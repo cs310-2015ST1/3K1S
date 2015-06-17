@@ -19,7 +19,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Edward's addition -->
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false"></script>
 
     <script>
         var user = 'http://www.robotwoods.com/dev/misc/bluecircle.png';
@@ -32,6 +32,7 @@
             "Private Liquor Store": [],
             "Proposed Store Location": []
         };
+        var search_markers = [];
 
 /*
 * storelist = array of store info(name, lat, lon, store type)
@@ -43,6 +44,7 @@ function getAllStores(){
     var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}'];
     storelist[i] = eachStore;
     i++;
+
     {% endfor %}
 }
 
@@ -93,6 +95,50 @@ var mapOptions={
 }
 
 map = new google.maps.Map(mapCanvas, mapOptions);
+
+
+// Andrew's addition
+var input = document.getElementById('map-search');
+
+var searchBox = new google.maps.places.SearchBox(
+    /** @type {HTMLInputElement} */(input));
+
+google.maps.event.addListener(searchBox, 'places_changed', function() {
+    var places = searchBox.getPlaces(); // Google API
+
+    if (places.length == 0) {
+        return 0;
+    }
+    for (var i = 0, search_marker; search_marker = search_markers[i]; i++) {
+        search_marker.setMap(null);
+    }
+
+    search_markers = [];
+    var bounds = new google.maps.LatLngBounds();
+    for (var i = 0, place; place = places[i]; i++) {
+        var image = {
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(25, 25)
+        };
+
+        var search_marker = new google.maps.Marker({
+            map: map,
+            icon: image,
+            title: place.name,
+            position: place.geometry.location
+        });
+
+        search_markers.push(search_marker);
+        bounds.extend(place.geometry.location);
+    }
+    map.panTo(bounds.getCenter());
+});
+
+
+// - Andrew
 
 var userMarker = new google.maps.Marker({
     position: myLatLon,
@@ -147,10 +193,6 @@ function create_marker(list_of_store) {
     }
 }
 
-
-function refresh_map() {
-
-}
 </script>
 
 <title> 3K1S </title>
@@ -187,10 +229,9 @@ function refresh_map() {
                     </li>
                 </ul>
                 <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <button type="submit" class="btn btn-default">Search</button>
+
+
+                    <!--<button type="submit" class="btn btn-default"> Search Map </button>-->
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Placeholder1</a></li>
@@ -219,7 +260,10 @@ function refresh_map() {
 
                 <div class="tab-content">
                     <div class="tab-pane active" id="map">
-                        <div class="col-md-8">
+                        <div class="col-md-8"><br>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="map-search" placeholder="Search">
+                            </div>
                             <div id="map-canvas" class="span12" style="display: block; height: 400px;"></div>
                         </div>
                         <div class="col-md-4">
