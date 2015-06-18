@@ -46,7 +46,6 @@ def import_db(request):
     #     print row
     
     for row in storeinfo:
-        #row =  row.split(',')
         tmp = LiquorStore.objects.create()
         tmp.city = row[0]
         tmp.name = row[1]
