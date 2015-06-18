@@ -1,8 +1,15 @@
 from django.shortcuts import render
+from django.http import  HttpResponse
 from liquor_locator.models import Category
 from liquor_locator.models import Page
+from liquor_locator.models import LiquorStore
 from liquor_locator.forms import CategoryForm
 from liquor_locator.forms import PageForm
+import csv
+import urllib2
+import sqlite3
+import sys, os
+
 
 # def index(request):
 # 	# Construct a dictionary to pass to the template engine as its context.
@@ -20,12 +27,35 @@ def index(request):
     # Order the categories by no. likes in descending order.
     # Retrieve the top 5 only - or all if less than 5.
     # Place the list in our context_dict dictionary which will be passed to the template engine.
-    category_list = Category.objects.order_by('-likes')[:5]
-    mostviewed_list = Page.objects.order_by('-views')[:5]
-    context_dict = {'categories': category_list, 'mostviewed' : mostviewed_list}
-
-    # Render the response and send it back!
+    import_db(request)
+    liquorstore_list = list(LiquorStore.objects.all())
+    context_dict = {'liquorstores': liquorstore_list}
+    
+    
     return render(request, 'liquor_locator/index.html', context_dict)
+
+
+
+
+def import_db(request):
+    url = 'http://www.pssg.gov.bc.ca/lclb/docs-forms/web_lrs.csv'
+    response = urllib2.urlopen(url)
+    storeinfo = csv.reader(response, delimiter=',')
+
+    # for row in storeinfo:
+    #     print row
+    
+    for row in storeinfo:
+        #row =  row.split(',')
+        tmp = LiquorStore.objects.create()
+        tmp.city = row[0]
+        tmp.name = row[1]
+        tmp.address = row[2]
+        tmp.storetype = row[3]
+        tmp.lat = 0
+        tmp.lon = 0
+        tmp.save()
+
 
 
 def about(request):
@@ -76,11 +106,11 @@ def add_category(request):
 
             # Now call the index() view.
             # The user will be shown the homepage.
-            print(cat, cat.slug)
+            print cat, cat.slug
             return index(request)
         else:
             # The supplied form contained errors - just print them to the terminal.
-            print(form.errors)
+            print form.errors
     else:
         # If the request was not a POST, display the form to enter details.
         form = CategoryForm()
@@ -108,7 +138,7 @@ def add_page(request, category_name_slug):
                 # probably better to use a redirect here.
                 return category(request, category_name_slug)
         else:
-            print(form.errors)
+            print form.errors
     else:
         form = PageForm()
 
