@@ -1,40 +1,287 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
-{% load staticfiles %} <!-- New line -->
-<html>
+<html lang="en">
+<head>
 
-    <head>
-        <title>Rango</title>
-    </head>
-    <body>
-        <h1>Rango says...</h1>
-        hello world!
-        <br/>
-        <br/>
-        <strong>Category Lists</strong>
-        {% if categories %}
-            <ul>
-                {% for category in categories %}
-                <li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <br/><strong>There are no categories present.</strong><br/>
-        {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-        <br/><strong>Top 5 pages</strong>
-        {% if mostviewed %}
-            <ul>
-                {% for page in mostviewed %}
-                <li><a href={{ page.url }}>{{ page.title }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <br/><strong>There are no top 5 pages present.</strong><br/>
-        {% endif %}
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-        <a href="/liquor_locator/about/">About</a><br />
-        <img src="{% static "images/liquor_locator.jpg" %}" alt="Picture of Rango" /> <!-- New line -->
-        <br /><a href="/liquor_locator/add_category/">Add a New Category</a>
-    </body>
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- Edward's addition -->
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false"></script>
+
+    <script>
+        var user = 'http://www.robotwoods.com/dev/misc/bluecircle.png';
+        var myLat;
+        var myLon;
+        var map;
+        var storelist = new Array();
+        var markers = {
+            "BC Liquor Store": [],
+            "Private Liquor Store": [],
+            "Proposed Store Location": []
+        };
+        var search_markers = [];
+
+/*
+* storelist = array of store info(name, lat, lon, store type)
+* sets storelist
+*/
+function getAllStores(){
+    var i = 0;
+    {% for store in liquorstores %}
+    var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}'];
+    storelist[i] = eachStore;
+    i++;
+
+    {% endfor %}
+}
+
+/*
+* Finds geolocation of user's location through Browser
+*/
+function geoFindMe(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(success, error, geo_options);
+
+    }else{
+        alert("Geolocation services are not supported by your web browser.");
+    }
+
+    function success(position) {
+        myLat = position.coords.latitude;
+        myLon = position.coords.longitude;
+        var altitude = position.coords.altitude;
+        var accuracy = position.coords.accuracy;
+
+        initialize(myLat, myLon);
+    }
+
+    function error(error) {
+        alert("Unable to retrieve your location due to "+error.code + " : " + error.message);
+    };
+    var geo_options = {
+        enableHighAccuracy: true,
+        maximumAge : 30000,
+        timeout : 27000
+    };
+}
+
+/*
+* Initialization of google map, with user location and storelist from getAllStores();
+*/
+function initialize(latitude, longitude){
+//Creates a list of stores
+getAllStores();
+
+//Google Map initialization
+var mapCanvas = document.getElementById('map-canvas');
+var myLatLon = new google.maps.LatLng(latitude, longitude);
+var mapOptions={
+    center: myLatLon,
+    zoom: 15,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+}
+
+map = new google.maps.Map(mapCanvas, mapOptions);
+
+
+// Andrew's addition
+var input = document.getElementById('map-search');
+
+var searchBox = new google.maps.places.SearchBox(
+    /** @type {HTMLInputElement} */(input));
+
+google.maps.event.addListener(searchBox, 'places_changed', function() {
+    var places = searchBox.getPlaces(); // Google API
+
+    if (places.length == 0) {
+        return 0;
+    }
+    for (var i = 0, search_marker; search_marker = search_markers[i]; i++) {
+        search_marker.setMap(null);
+    }
+
+    search_markers = [];
+    var bounds = new google.maps.LatLngBounds();
+    for (var i = 0, place; place = places[i]; i++) {
+        var image = {
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(25, 25)
+        };
+
+        var search_marker = new google.maps.Marker({
+            map: map,
+            icon: image,
+            title: place.name,
+            position: place.geometry.location
+        });
+
+        search_markers.push(search_marker);
+        bounds.extend(place.geometry.location);
+    }
+    map.panTo(bounds.getCenter());
+});
+
+
+// - Andrew
+
+var userMarker = new google.maps.Marker({
+    position: myLatLon,
+    map: map,
+    icon: user,
+});
+
+create_marker(storelist);
+}
+
+</script>
+
+<script>
+// if checkbox is checked or not...
+$(document).ready(function() {
+    $(':checkbox').change(function() {
+        var id = $(this).attr('id');
+        if (!this.checked) {
+            for (i = 0; i < markers[id].length; i++) {
+                markers[id][i].setVisible(false);
+            }
+        } else {
+            for (i = 0; i < markers[id].length; i++) {
+                markers[id][i].setVisible(true);
+            }
+        }
+    });
+});
+
+function create_marker(list_of_store) {
+    for (i = 0; i < list_of_store.length; i++) {
+        // storelist[i][0]: store name
+        // storelist[i][1]: latitude
+        // storelist[i][2]: longitude
+        // storelist[i][3]: store category
+        // -> one of: BC Liquor Store
+        //            Private Liquor Store
+        //            Proposed Store Location
+        
+        var infowindow = new google.maps.InfoWindow();
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(storelist[i][1], storelist[i][2]),
+            map: map
+        });
+        markers[storelist[i][3]].push(marker);
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infowindow.setContent(storelist[i][0]);
+                infowindow.open(map, marker);
+            }
+        })(marker, i));
+    }
+}
+
+</script>
+
+<title> 3K1S </title>
+</head>
+<body onload="geoFindMe()">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#3K1S-navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">3K1S</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="3K1S-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">LogIn</a></li>
+                    <li><a href="/liquor_locator/about/">About</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Menu <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Placeholder1</a></li>
+                            <li><a href="#">Placeholder2</a></li>
+                            <li><a href="#">Placeholder3</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Placeholder4</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-left" role="search">
+
+
+                    <!--<button type="submit" class="btn btn-default"> Search Map </button>-->
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">Placeholder1</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Menu <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Placeholder1</a></li>
+                            <li><a href="#">Placeholder2</a></li>
+                            <li><a href="#">Placeholder3</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Placeholder4</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
+                    <li><a href="#list" data-toggle="tab">List</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="map">
+                        <div class="col-md-8"><br>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="map-search" placeholder="Search">
+                            </div>
+                            <div id="map-canvas" class="span12" style="display: block; height: 400px;"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="checkbox">
+                                <label> <input type="checkbox" id="BC Liquor Store" checked> Public </label><br>
+                                <label> <input type="checkbox" id="Private Liquor Store" checked> Private </label><br>
+                                <label> <input type="checkbox" id="Proposed Store Location" checked> Proposed </label><br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="list">
+                        <p> Maybe tabular view of the store list goes here </p>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+
+
+</body>
 </html>
