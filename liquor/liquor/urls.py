@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     # access "liquor_locator" application and indicate liquor_locator application urls to be imported
-    url(r'^liquor_locator/', include('liquor_locator.urls')), # ADD THIS NEW TUPLE!
+    url(r'^', include('liquor_locator.urls')), # ADD THIS NEW TUPLE!
 ]
 
 if settings.DEBUG:
