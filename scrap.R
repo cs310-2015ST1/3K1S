@@ -2,6 +2,7 @@ rm(list=ls())
 
 # Load libraries
 library("XML")
+library("geosphere")
 
 # set to current working directory
 setwd("~/git/3K1S")
@@ -38,38 +39,97 @@ for (k in 1:length(bls.urls)) {
   # format information
   names(bls.store.info) <- c("Address", "Phone", "Hours")
   for (i in 1:length(bls.store.info)) {
-    bls.store.info[i] = trim(trim.spaces(trim.html.chars(bls.store.info[i])))
+    bls.store.info[i] <- trim(trim.spaces(trim.html.chars(bls.store.info[i])))
   }
-  if (grep("Address: ", bls.store.info[1])) {
-    bls.store.info[1] = gsub("Address: ", "", bls.store.info[1])
+  if (grepl("Address: ", bls.store.info[1])) {
+    bls.store.info[1] <- gsub("Address: ", "", bls.store.info[1])
   } else {
     print(paste("Address error at index:", 3))
   }
-  if (grep("Phone:| Call", bls.store.info[2])) {
-    bls.store.info[2] = gsub("Phone:| Call", "", bls.store.info[2])
+  if (grepl("Phone:| Call", bls.store.info[2])) {
+    bls.store.info[2] <- gsub("Phone:| Call", "", bls.store.info[2])
   } else {
     print(paste("Phone error at index:", 3))
   }
   
-  if (grep("Other information: ", bls.store.info[3])) {
-    bls.store.info[3] = gsub("Other information: ", "", bls.store.info[3])
-    bls.hours.list = unlist(strsplit(bls.store.info[3], "(?<=pm )", perl = TRUE))
-    bls.hours.list = bls.hours.list[-length(bls.hours.list)]
-    bls.hours.list = unlist(lapply(bls.hours.list, trim))
-    bls.store.info[3] = paste(bls.hours.list, collapse = "|")
+  if (grepl("Other information: ", bls.store.info[3])) {
+    bls.store.info[3] <- gsub("Other information: ", "", bls.store.info[3])
+    bls.hours.list <- unlist(strsplit(bls.store.info[3], "(?<=pm )", perl = TRUE))
+    bls.hours.list <- bls.hours.list[-length(bls.hours.list)]
+    bls.hours.list <- unlist(lapply(bls.hours.list, trim))
+    bls.store.info[3] <- paste(bls.hours.list, collapse = "|")
   } else {
     print(paste("Hours error at index:", 3))
   }
   store.data <- rbind(store.data, t(bls.store.info))
 }
 
+# save as a csv for backup
+write.csv(store.data, "liquor/static/scrapped.csv", row.names = FALSE)
+
+# -----------------------------------------------------------------------------
+# Add lat & lon information to scrapped data
+# -----------------------------------------------------------------------------
+store.data <- read.csv("liquor/static/scrapped.csv", header = TRUE)
+google_api_address <- "https://maps.googleapis.com/maps/api/geocode/json?address="
+
+# add columns to store.data
+store.data$lat <- 0
+store.data$lon <- 0
+
+for (i in 1:nrow(store.data)) {
+  request_url <- paste(google_api_address,
+                      curlEscape(store.data$Address[i]), sep = "")
+  response <- fromJSON(getURL(request_url))
+  store.data[i,5] <- response$results[[1]]$geometry$location["lat"]
+  store.data[i,6] <- response$results[[1]]$geometry$location["lng"]
+  Sys.sleep(0.3)
+  print(paste("........................ ", format(round(i/nrow(store.data) * 100, 2), nsmall = 2), "%", sep=""))
+}
+
+# save as a csv for backup
+write.csv(store.data, "liquor/static/scrapped.csv", row.names = FALSE)
+
 # -----------------------------------------------------------------------------
 # Data match
 # -----------------------------------------------------------------------------
 # data from BC Government and reformatted after latlon
-data.file <- read.csv("liquor/static/data.csv")
+store.data <- read.csv("liquor/static/scrapped.csv", stringsAsFactors = FALSE)
+data.file <- read.csv("liquor/static/data.csv", stringsAsFactors = FALSE)
 
-# 200 BC Liquor Stores from the dataset
-length(data.file[data.file$type == "BC Liquor Store",]$address)
+class(data.file) == class(store.data)
+
+# add hours column
+data.file$hours <- ""
+
+class(data.file$hours[1])
+
+# cross-match lat lons of two different datasets to determine their relationships
+for (i in 1:nrow(data.file[data.file$type == "BC Liquor Store",])) {
+  data.file.index <- as.numeric(rownames(data.file[data.file$type == "BC Liquor Store",][i,]))
+  data.file.lat <- data.file[data.file.index,"lat"]
+  data.file.lon <- data.file[data.file.index,"lon"]
+  distances <- data.frame(lat1 = store.data$lat, lat2 = data.file.lat,
+                          lon1 = store.data$lon, lon2 = data.file.lon,
+                          distance = 0)
+  haver.dist <- apply(distances[, c("lat1", "lat2", "lon1", "lon2")], 1,
+                      function(x) distHaversine(c(x["lon1"], x["lat1"]), c(x["lon2"], x["lat2"])))
+
+  store.data.index <- match(min(haver.dist), haver.dist)
+  data.file$hours[data.file.index] <- store.data$Hours[store.data.index]
+}
+
+
+format.for.comparison(data.file[data.file$type == "BC Liquor Store",]$address[4])
+format.for.comparison(store.data$Address[193])
+
+
+grepl(remove.all.spaces(data.file[data.file$type == "BC Liquor Store",]$address[1]),
+      remove.all.spaces(store.data$Address[1]), ignore.case = TRUE)
+
+
+
+
+
 
 
