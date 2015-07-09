@@ -102,8 +102,6 @@ class(data.file) == class(store.data)
 # add hours column
 data.file$hours <- ""
 
-class(data.file$hours[1])
-
 # cross-match lat lons of two different datasets to determine their relationships
 for (i in 1:nrow(data.file[data.file$type == "BC Liquor Store",])) {
   data.file.index <- as.numeric(rownames(data.file[data.file$type == "BC Liquor Store",][i,]))
@@ -119,17 +117,19 @@ for (i in 1:nrow(data.file[data.file$type == "BC Liquor Store",])) {
   data.file$hours[data.file.index] <- store.data$Hours[store.data.index]
 }
 
-
-format.for.comparison(data.file[data.file$type == "BC Liquor Store",]$address[4])
-format.for.comparison(store.data$Address[193])
+write.csv(data.file, "liquor/static/data_hours.csv", row.names = FALSE)
 
 
-grepl(remove.all.spaces(data.file[data.file$type == "BC Liquor Store",]$address[1]),
-      remove.all.spaces(store.data$Address[1]), ignore.case = TRUE)
+# -----------------------------------------------------------------------------
+# Definitions of done:
+# - (Government owned) BC liquor stores are correctly paired up with their hours of operation.
+# - Private liquor stores’ hours of operation is null/not available
+# -----------------------------------------------------------------------------
+data.file <- read.csv("liquor/static/data_hours.csv", stringsAsFactors = FALSE)
 
-
-
-
-
-
+# the hours cell of BC Liquor Store should contain more than 0 character
+# the hours cell of Private Liquor Store and others should contain 0 character
+all(lapply(data.file[data.file$type == "BC Liquor Store",]$hours, function(x) nchar(x) > 0) == TRUE)
+all(lapply(data.file[data.file$type == "Private Liquor Store",]$hours, function(x) nchar(x) == 0) == TRUE)
+all(lapply(data.file[data.file$type == "Proposed Store Location",]$hours, function(x) nchar(x) == 0) == TRUE)
 
