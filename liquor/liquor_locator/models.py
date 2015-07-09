@@ -32,6 +32,7 @@ class LiquorStore(models.Model):
     lat = models.CharField(max_length=64, blank=True)
     lon = models.CharField(max_length=64, blank=True)
     storetype = models.CharField(max_length=64, blank=True)
+    hours = models.CharField(max_length=300, blank=True)
 
     def __unicode__(self):
         return self.name
