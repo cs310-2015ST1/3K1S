@@ -49,3 +49,14 @@ class UserProfile(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.user.username
+
+# class Comment (models.Model):
+#     liquorStore = models.ForeignKey(LiquorStore)
+
+#     when a liquorstore is selected, you can filter liquorstore specific comments from all comments and display that
+
+# class LiquorStore (models.Model):
+#     user = models.ManyToMany(UserProfile)
+
+# class UserProfile (modles.Model):
+#     user = models.OneToOneField(User)
