@@ -34,6 +34,11 @@
         };
         var search_markers = [];
 
+
+        window.onload = function() {
+            geoFindMe();
+        }
+
 /*
 * storelist = array of store info(name, lat, lon, store type)
 * sets storelist
@@ -41,10 +46,9 @@
 function getAllStores(){
     var i = 0;
     {% for store in liquorstores %}
-    var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}'];
+    var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}'];
     storelist[i] = eachStore;
     i++;
-
     {% endfor %}
 }
 
@@ -54,7 +58,6 @@ function getAllStores(){
 function geoFindMe(){
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(success, error, geo_options);
-
     }else{
         alert("Geolocation services are not supported by your web browser.");
     }
@@ -62,20 +65,18 @@ function geoFindMe(){
     function success(position) {
         myLat = position.coords.latitude;
         myLon = position.coords.longitude;
-        var altitude = position.coords.altitude;
-        var accuracy = position.coords.accuracy;
-
         initialize(myLat, myLon);
     }
 
     function error(error) {
         alert("Unable to retrieve your location due to "+error.code + " : " + error.message);
-    };
+    }
+
     var geo_options = {
         enableHighAccuracy: true,
         maximumAge : 30000,
         timeout : 27000
-    };
+    }
 }
 
 /*
@@ -168,8 +169,8 @@ $(document).ready(function() {
     });
 });
 
-function create_marker(list_of_store) {
-    for (i = 0; i < list_of_store.length; i++) {
+function create_marker() {
+    for (i = 0; i < storelist.length; i++) {
         // storelist[i][0]: store name
         // storelist[i][1]: latitude
         // storelist[i][2]: longitude
@@ -186,7 +187,16 @@ function create_marker(list_of_store) {
         markers[storelist[i][3]].push(marker);
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                infowindow.setContent(storelist[i][0]);
+                var temp = storelist[i][4].split("|");
+                infowindowString = "<div class='container'><h3>" + storelist[i][0]
+                + "</h3><hr/><h4>" + storelist[i][3] + "</h4><br>" + "<div class='container'>";
+
+                for (j = 0; j < temp.length; j++) {
+                    infowindowString += temp[j] + "<br>";
+                }
+                infowindowString += "</div><br><a href='/store'> Show Place </a>";
+
+                infowindow.setContent(infowindowString);
                 infowindow.open(map, marker);
             }
         })(marker, i));
@@ -197,7 +207,7 @@ function create_marker(list_of_store) {
 
 <title> 3K1S </title>
 </head>
-<body onload="geoFindMe()">
+<body>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -231,7 +241,7 @@ function create_marker(list_of_store) {
                 <form class="navbar-form navbar-left" role="search">
 
 
-                    <!--<button type="submit" class="btn btn-default"> Search Map </button>-->
+                <!--<button type="submit" class="btn btn-default"> Search Map </button>-->
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Placeholder1</a></li>
@@ -281,7 +291,15 @@ function create_marker(list_of_store) {
             </div>
         </div>  
     </div>
-
+{% if user.is_authenticated %}
+    <h1>User is authenticated {{ user.username }}!</h1>
+    <a href="/restricted/">Restricted Page</a><br />
+    <a href="/logout/">Logout</a><br />
+{% else %}
+    <h1>user is not authenticated</h1>
+    <a href="/register/">Register Here</a><br />
+    <a href="/login/">Login</a><br />
+{% endif %}
 
 </body>
 </html>

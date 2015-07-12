@@ -1,33 +1,38 @@
-__author__ = 'ryan'
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'liquor.settings')
 import django
-django.setup()
-from liquor_locator.models import LiquorStore
 import csv
+import hashlib
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'liquor.settings')
+django.setup()
+
+from liquor_locator.models import LiquorStore
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_PATH = os.path.join(BASE_DIR, 'static')
 
 def populate():
-    #url = 'http://www.pssg.gov.bc.ca/lclb/docs-forms/web_lrs.csv'
-    #response = urllib2.urlopen(url)
-    response = os.path.join(STATIC_PATH, 'data_hours.csv')
-    
-    with open(response, 'rb') as csvfile:
-
+    dataFeed = os.path.join(STATIC_PATH, 'data_hours.csv')
+    LiquorStore.objects.all().delete()
+    with open(dataFeed, 'rb') as csvfile:
         storeinfo = csv.reader(csvfile, delimiter=',')
         next(storeinfo, None)
         for i, row in enumerate(storeinfo):
-            tmp = LiquorStore.objects.create()
-            tmp.name = row[1]
-            tmp.address = row[2]
-            tmp.storetype = row[3]
-            tmp.lat = row[4]
-            tmp.lon = row[5]
-            tmp.hours = row[6]
-            tmp.save()
+            store = LiquorStore.objects.create()
+            store.name = row[1]
+            store.address = row[2]
+            store.storetype = row[3]
+            store.lat = row[4]
+            store.lon = row[5]
+            store.hours = row[6]
+            # String concat & hash the string -> unique store ID
+            stringToHash = row[1] + row[2] + row[3] + row[4] + row[5] + row[6]
+            md5Hash = hashlib.md5(stringToHash)
+            print(md5Hash)
+            store.storeHash = md5Hash.hexdigest()
 
+            store.save()
 
 # Start execution here!
 if __name__ == '__main__':
