@@ -283,13 +283,13 @@ function create_marker(list_of_store) {
     </div>
 
 {% if user.is_authenticated %}
-    <h1>Rango says... hello {{ user.username }}!</h1>
-    <a href="/rango/restricted/">Restricted Page</a><br />
-    <a href="/rango/logout/">Logout</a><br />
+    <h1>User is authenticated {{ user.username }}!</h1>
+    <a href="/restricted/">Restricted Page</a><br />
+    <a href="/logout/">Logout</a><br />
 {% else %}
-    <h1>Rango says... hello world!</h1>
-    <a href="/rango/register/">Register Here</a><br />
-    <a href="/rango/login/">Login</a><br />
+    <h1>user is not authenticated</h1>
+    <a href="/register/">Register Here</a><br />
+    <a href="/login/">Login</a><br />
 {% endif %}
 </body>
 </html>
