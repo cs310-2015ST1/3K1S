@@ -1,31 +1,30 @@
 import datetime
-
+import math
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
+class LiquorStoreManager(models.Manager):
+    def near(self, latitude, longitude, radius):
+        unit = 6371
 
-class Category(models.Model):
-    name = models.CharField(max_length=128, unique=True)
-    views = models.IntegerField(default=0)
-    likes = models.IntegerField(default=0)
-    slug = models.SlugField(unique=True)
+        from django.db import connection, transaction
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(Category, self).save(*args, **kwargs)
+        cursor = connection.cursor()
+        connection.connection.create_function('acos', 1, math.acos)
+        connection.connection.create_function('cos', 1, math.cos)
+        connection.connection.create_function('radians', 1, math.radians)
+        connection.connection.create_function('sin', 1, math.sin)
+        connection.connection.create_function('float', 1, float)
 
-    def __unicode__(self):  #For Python 2, use __str__ on Python 3
-        return self.name
+        sql = """SELECT *, (acos(sin(radians(%f)) * sin(radians(float(lat))) + cos(radians(%f)) 
+        * cos(radians(float(lat))) * cos(radians(%f-float(lon)))) * %d)
+        AS distance FROM liquor_locator_LiquorStore WHERE distance < %f 
+        ORDER BY distance;""" % (latitude, latitude, longitude, unit, radius)
 
-class Page(models.Model):
-    category = models.ForeignKey(Category)
-    title = models.CharField(max_length=128)
-    url = models.URLField()
-    views = models.IntegerField(default=0)
-
-    def __unicode__(self):      #For Python 2, use __str__ on Python 3
-        return self.title       #methods analogous to the toString() method in a Java
+        cursor.execute(sql)
+        ids = [row[0] for row in cursor.fetchall()]
+        return self.filter(id__in=ids)
 
 class LiquorStore(models.Model):
     name = models.CharField(max_length=128, blank=True)
@@ -34,11 +33,13 @@ class LiquorStore(models.Model):
     lon = models.CharField(max_length=64, blank=True)
     storetype = models.CharField(max_length=64, blank=True)
     hours = models.CharField(max_length=300, blank=True)
-
     storeHash = models.CharField(max_length=32, blank=True)
+
+    objects = LiquorStoreManager()
 
     def __unicode__(self):
         return self.name
+
 
 class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
