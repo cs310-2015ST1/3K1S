@@ -105,10 +105,14 @@ def register(request):
             'liquor_locator/register.html',
             {'user_form': user_form, 'profile_form': profile_form, 'registered': registered} )
 
-def user_login(request):
+def user_session(request):
 
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
+        if request.user.is_authenticated():
+            logout(request)
+            return HttpResponseRedirect('/')
+
         # Gather the username and password provided by the user.
         # This information is obtained from the login form.
                 # We use request.POST.get('<variable>') as opposed to request.POST['<variable>'],
@@ -116,8 +120,6 @@ def user_login(request):
                 # while the request.POST['<variable>'] will raise key error exception
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username)
-        print(password)
 
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.
@@ -152,12 +154,3 @@ def user_login(request):
 @login_required
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
-
-# Use the login_required() decorator to ensure only those logged in can access the view.
-@login_required
-def user_logout(request):
-    # Since we know the user is logged in, we can now just log them out.
-    logout(request)
-
-    # Take the user back to the homepage.
-    return HttpResponseRedirect('/')
