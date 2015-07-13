@@ -47,7 +47,7 @@
 function getStores(){
     var i = 0;
     {% for store in liquorstore %}
-    var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}'];
+    var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}', '{{store.storeHash}}'];
     storelist[i] = eachStore;
     i++;
     {% endfor %}
@@ -175,6 +175,7 @@ $(document).ready(function() {
                 temp.push(obj["lon"]);
                 temp.push(obj["storetype"]);
                 temp.push(obj["hours"]);
+                temp.push(obj["storeHash"]);
                 storelist[i] = temp;
             }
             create_marker();
@@ -213,8 +214,17 @@ function create_marker() {
                 for (j = 0; j < temp.length; j++) {
                     infowindowString += temp[j] + "<br>";
                 }
-                infowindowString += "</div><br><a href='/store'> Show Place </a>"
-                + "<a href='https://www.facebook.com/sharer/sharer.php?u=3k1s.pythonanywhere.com')><img src='http://i.imgur.com/q0hxkbY.png'></a>";
+
+                var location = "/store/" + storelist[i][5];
+
+                infowindowString += "</div><br><a href='";
+                infowindowString += location;
+                infowindowString += "'> Show Place </a><br>";
+                var urlToShare = window.location.origin + location;
+                infowindowString += "<a href='https://www.facebook.com/sharer/sharer.php?u=";
+                infowindowString += urlToShare;
+
+                infowindowString += "')><img src='http://i.imgur.com/q0hxkbY.png'></a>";
 
                 infowindow.setContent(infowindowString);
                 infowindow.open(map, marker);

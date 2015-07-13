@@ -40,10 +40,16 @@ def index(request):
 
     liquorstore_list = list(LiquorStore.objects.all())
     context_dict = {'liquorstore': liquorstore_list}
+    
     return render(request, 'liquor_locator/index.html', context_dict)
 
-def register(request):
+def store(request, store_id):
+    liquorstore = LiquorStore.objects.get(storeHash = store_id)
+    context_dict = {'liquorstore': liquorstore}
 
+    return render(request, 'liquor_locator/store.html', context_dict)
+
+def register(request):
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registration succeeds.
     registered = False

@@ -1,0 +1,110 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script> storeHash = localStorage.getItem("storeHash");</script>
+
+<title> 3K1S </title>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#3K1S-navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">3K1S</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="3K1S-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">Home <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">LogIn</a></li>
+                    <li><a href="/liquor_locator/about/">About</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Menu <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Placeholder1</a></li>
+                            <li><a href="#">Placeholder2</a></li>
+                            <li><a href="#">Placeholder3</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Placeholder4</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="nav navbar-nav navbar-right form-inline" method="post" action="/login/" style="position: relative; margin-top: 6px;">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        <h1>User is authenticated {{ user.username }}!</h1>
+                    {% else %}
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="username" placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-default">Sign in</button>
+                    {% endif %}
+                </form>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    
+    <div class="container">
+        <h1> {{liquorstore.name}}</h1>
+        <h2> {{liquorstore.address}}</h2>
+        <hr />
+        <h3> {{liquorstore.storetype}} </h3>
+        <h4 id="storeHour"> </h4>
+        <script>
+            var storeHour = "{{liquorstore.hours}}"
+            var temp = storeHour.split("|");
+            var infoString = "";
+            for (j = 0; j < temp.length; j++) {
+            infoString += temp[j] + "<br>";
+            }
+            document.getElementById("storeHour").innerHTML = infoString;
+        </script>
+        
+    </div>
+
+    <div class="container" id="info">
+        <h1 id="storeName"> </h1>
+        <h2 id="storeType"> </h2>
+        <h4 id="storeHour"> </h4>
+
+    </div>
+
+{% if user.is_authenticated %}
+    <h1>User is authenticated {{ user.username }}!</h1>
+    <a href="/restricted/">Restricted Page</a><br />
+    <a href="/logout/">Logout</a><br />
+{% else %}
+    <h1>user is not authenticated</h1>
+    <a href="/register/">Register Here</a><br />
+    <a href="/login/">Login</a><br />
+{% endif %}
+
+</body>
+</html>
