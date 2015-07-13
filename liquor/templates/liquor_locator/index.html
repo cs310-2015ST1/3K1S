@@ -18,7 +18,7 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <!-- Edward's addition -->
+    <!-- Google maps -->
     <script src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false"></script>
 
     <script>
@@ -36,6 +36,7 @@
 
 
         window.onload = function() {
+            timezoneInfo();
             getStores();
             geoFindMe();
         }
@@ -248,6 +249,16 @@ function deleteMarkers() {
     storelist = null;
 }
 
+function timezoneInfo() {
+    var d = new Date()
+    var n = d.getTimezoneOffset();
+    if (n > 420 || n < 420) {
+        document.getElementById("timezoneText").innerHTML = "Wrong timezone";
+    } else {
+        document.getElementById("timezoneText").innerHTML = "Pacific time";
+    }
+}
+
 </script>
 
 <title> 3K1S </title>
@@ -271,7 +282,7 @@ function deleteMarkers() {
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
                     <li><a href="#">Store</a></li>
-                    
+                    <p class="navbar-text" id="timezoneText"></p> 
                     <!--
                     <li><a href="/liquor_locator/about/">About</a></li>
                     
@@ -288,19 +299,21 @@ function deleteMarkers() {
                     -->
                 </ul>
 
-                <form class="nav navbar-nav navbar-right form-inline" method="post" action="/session/" style="position: relative; margin-top: 7px;">
+                <form class="nav navbar-nav navbar-right form-inline" method="post" action="/session/">
                     {% csrf_token %}
                     {% if user.is_authenticated %}
-                        Hello {{ user.username }}!
-                        <button type="submit" class="btn btn-default">Log out</button>
-                    {% else %}
                         <div class="form-group">
+                            <p class="navbar-text">Hello {{ user.username }}! </p>  
+                            <button type="submit" class="btn btn-default" style="margin-top: 7px;">Log out</button>
+                        </div>
+                    {% else %}
+                        <div class="form-group" style="margin-top: 7px;">
                             <input type="text" class="form-control" name="username" placeholder="Username">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="margin-top: 7px;">
                             <input type="password" class="form-control" name="password" placeholder="Password">
                         </div>
-                        <button type="submit" class="btn btn-default">Sign in</button>
+                        <button type="submit" class="btn btn-default" style="margin-top: 7px;">Sign in</button>
                     {% endif %}
                 </form>
             </div><!-- /.navbar-collapse -->

@@ -1,4 +1,6 @@
 import json
+import datetime
+from django.utils import timezone
 
 from django.shortcuts import render
 from django.template import Context, Template
@@ -8,7 +10,7 @@ from liquor_locator.forms import UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
-from haversine import haversine
+
 
 # def index(request):
 #   # Construct a dictionary to pass to the template engine as its context.
