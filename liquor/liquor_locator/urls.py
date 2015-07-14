@@ -10,4 +10,7 @@ urlpatterns = patterns('',
         url(r'^restricted/', views.restricted, name='restricted'),
         url(r'^store/(?P<store_id>[a-z0-9 _]+)/$', views.store, name='store'),
         url(r'^favorites/$', views.favorites, name='favorites'),
+        url(r'^addToFavorites/(?P<store_id>[a-z0-9 _]+)/$', views.addToFavorites, name='addToFavorites'),
+        url(r'^deleteFromFavorites/(?P<store_id>[a-z0-9 _]+)/$', views.deleteFromFavorites, name='deleteFromFavorites'),
+
         )

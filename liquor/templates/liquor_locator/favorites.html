@@ -11,7 +11,10 @@
             <ul>
                 {% for favorite in favorites %}
                 <li><a href="/store/{{favorite.storeHash}}">{{ favorite.name }}</a></li>
+                <a href="/deleteFromFavorites/{{favorite.storeHash}}"> remove </a>
+                <br/>
                 {% endfor %}
+                <br/><a href="/">Back to index</a>
             </ul>
         {% else %}
             <strong>No favorites for the current user.</strong>

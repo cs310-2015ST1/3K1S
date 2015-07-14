@@ -166,3 +166,22 @@ def favorites(request):
     context_dict = {'favorites': favorites}
 
     return render(request, 'liquor_locator/favorites.html', context_dict)
+
+@login_required
+def addToFavorites(request, store_id):
+    current_user = request.user
+    liquorstore = LiquorStore.objects.get(storeHash=store_id)
+    liquorstore.fav_user.add(current_user)
+
+    return favorites(request)
+
+@login_required
+def deleteFromFavorites(request, store_id):
+    current_user = request.user
+    liquorstore = LiquorStore.objects.get(storeHash=store_id)
+    liquorstore.fav_user.remove(current_user)
+    
+    favorites = LiquorStore.objects.filter(fav_user=current_user)
+    context_dict = {'favorites': favorites}
+    return render(request, 'liquor_locator/favorites.html', context_dict)
+
