@@ -9,4 +9,5 @@ urlpatterns = patterns('',
         url(r'^session/$', views.user_session, name='session'),
         url(r'^restricted/', views.restricted, name='restricted'),
         url(r'^store/(?P<store_id>[a-z0-9 _]+)/$', views.store, name='store'),
+        url(r'^favorites/$', views.favorites, name='favorites'),
         )

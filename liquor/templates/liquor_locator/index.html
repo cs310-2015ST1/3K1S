@@ -368,6 +368,7 @@ function timezoneInfo() {
 {% if user.is_authenticated %}
     <h1>User is authenticated {{ user.username }}!</h1>
     <a href="/restricted/">Restricted Page</a><br />
+    <a href="/favorites/">Favorites Page</a><br />
     <a href="/logout/">Logout</a><br />
 {% else %}
     <h1>user is not authenticated</h1>

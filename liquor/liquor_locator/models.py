@@ -26,6 +26,8 @@ class LiquorStoreManager(models.Manager):
         ids = [row[0] for row in cursor.fetchall()]
         return self.filter(id__in=ids)
 
+
+
 class LiquorStore(models.Model):
     name = models.CharField(max_length=128, blank=True)
     address = models.CharField(max_length=128)
@@ -37,9 +39,10 @@ class LiquorStore(models.Model):
 
     objects = LiquorStoreManager()
 
+    fav_user = models.ManyToManyField(User)
+
     def __unicode__(self):
         return self.name
-
 
 class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
@@ -52,6 +55,9 @@ class UserProfile(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.user.username
+
+
+
 
 # class Comment (models.Model):
 #     liquorStore = models.ForeignKey(LiquorStore)

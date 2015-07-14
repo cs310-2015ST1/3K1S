@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Liquor_locator</title>
+    </head>
+
+    <body>
+        <h1>{{ user.username }}</h1>
+        {% if favorites %}
+            
+            <ul>
+                {% for favorite in favorites %}
+                <li><a href="/store/{{favorite.storeHash}}">{{ favorite.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <strong>No favorites for the current user.</strong>
+            <br/><a href="/">Back to index</a>
+
+        {% endif %}
+    </body>
+</html>

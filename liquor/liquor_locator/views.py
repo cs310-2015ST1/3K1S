@@ -156,3 +156,13 @@ def user_session(request):
 @login_required
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
+
+
+@login_required
+def favorites(request):
+    current_user = request.user
+    favorites = LiquorStore.objects.filter(fav_user=current_user)
+    
+    context_dict = {'favorites': favorites}
+
+    return render(request, 'liquor_locator/favorites.html', context_dict)
