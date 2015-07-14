@@ -39,6 +39,8 @@ INSTALLED_APPS = (
     'debug_toolbar',
 )
 
+LOGIN_URL = '/register/'
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

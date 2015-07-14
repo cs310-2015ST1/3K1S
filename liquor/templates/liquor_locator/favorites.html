@@ -5,21 +5,25 @@
     </head>
 
     <body>
-        <h1>{{ user.username }}</h1>
-        {% if favorites %}
-            
-            <ul>
-                {% for favorite in favorites %}
-                <li><a href="/store/{{favorite.storeHash}}">{{ favorite.name }}</a></li>
-                <a href="/deleteFromFavorites/{{favorite.storeHash}}"> remove </a>
-                <br/>
-                {% endfor %}
+        {% if user.is_authenticated %}
+            <h1>{{ user.username }}</h1>
+            {% if favorites %}
+                <ul>
+                    {% for favorite in favorites %}
+                    <li><a href="/store/{{favorite.storeHash}}">{{ favorite.name }}</a></li>
+                    <a href="/deleteFromFavorites/{{favorite.storeHash}}"> remove </a>
+                    <br/>
+                    {% endfor %}
+                    <br/><a href="/">Back to index</a>
+                </ul>
+            {% else %}
+                <strong>No favorites for the current user.</strong>
                 <br/><a href="/">Back to index</a>
-            </ul>
+            {% endif %}
         {% else %}
-            <strong>No favorites for the current user.</strong>
-            <br/><a href="/">Back to index</a>
-
+            <h1>user is not authenticated</h1>
+            <a href="/register/">Register Here</a><br />
+            <a href="/login/">Login</a><br />
         {% endif %}
     </body>
 </html>
