@@ -4,8 +4,10 @@ from django.utils import timezone
 
 from django.shortcuts import render
 from django.template import Context, Template
-from liquor_locator.models import LiquorStore, UserProfile
-from liquor_locator.forms import UserForm, UserProfileForm
+from liquor_locator.models import LiquorStore, UserProfile, Comment
+from liquor_locator.forms import UserForm, UserProfileForm, CommentForm, EditForm
+from django.views.generic.edit import DeleteView 
+from django.core.urlresolvers import reverse_lazy
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -45,11 +47,75 @@ def index(request):
     
     return render(request, 'liquor_locator/index.html', context_dict)
 
+
 def store(request, store_id):
     liquorstore = LiquorStore.objects.get(storeHash = store_id)
-    context_dict = {'liquorstore': liquorstore}
+
+    try:
+        comments = Comment.objects.filter(liquorStore = liquorstore)
+    except comments.DoesNotExist:
+                comments = None
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        content = request.POST.get('comment')
+    
+        if form.is_valid():
+            
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.comment = content
+            comment.liquorStore = liquorstore
+            comment.save()
+            form = CommentForm()
+            
+            # probably better to use a redirect here.
+            context_dict = {'comments':comments, 'form':form, 'liquorstore': liquorstore}
+            return render(request, 'liquor_locator/store.html', context_dict)
+            
+        else:
+            print form.errors
+    else:
+        form = CommentForm()
+
+    context_dict = {'comments': comments, 'form':form, 'liquorstore': liquorstore}
 
     return render(request, 'liquor_locator/store.html', context_dict)
+
+
+def deleteComment(request, comment_id, store_id):
+    user = request.user
+    comment = Comment.objects.get(pk=comment_id)
+    comment.delete()
+
+    return store(request, store_id)
+
+def editComment(request, comment_id, store_id):
+    liquorstore = LiquorStore.objects.get(storeHash = store_id)
+    comment = Comment.objects.get(pk=comment_id)
+    comments = Comment.objects.filter(liquorStore=liquorstore)
+
+    if request.method == 'POST':
+        form = EditForm(request.POST, instance=comment)
+        content = request.POST.get('comment')
+        if form.is_valid():
+            form.comment = content
+            form.save()
+            form = EditForm()
+            
+            # probably better to use a redirect here.
+            context_dict = {'comments':comments, 'form':form, 'liquorstore': liquorstore}
+            return render(request, 'liquor_locator/store.html', context_dict)
+            
+        else:
+            print form.errors
+    else:
+        form = EditForm()
+
+    context_dict = {'comments': comments, 'form':form, 'liquorstore': liquorstore}
+
+    return render(request, 'liquor_locator/store.html', context_dict)
+
 
 def register(request):
     # A boolean value for telling the template whether the registration was successful.

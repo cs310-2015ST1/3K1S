@@ -37,8 +37,21 @@ class LiquorStore(models.Model):
 
     objects = LiquorStoreManager()
 
+    #added by Edward Sprint 2
     def __unicode__(self):
         return self.name
+
+#added by Edward Sprint 2
+class Comment(models.Model):
+    user=models.OneToOneField(User)
+    comment = models.CharField(max_length=128)
+    isRemoved = models.BooleanField(default=False)
+    createdDate = models.DateTimeField(auto_now_add=True)
+    liquorStore = models.ForeignKey(LiquorStore, null=True)
+    user = models.ForeignKey(User, null=True)
+    
+    def __unicode__(self):
+        return self.comment
 
 
 class UserProfile(models.Model):
@@ -52,6 +65,7 @@ class UserProfile(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.user.username
+
 
 # class Comment (models.Model):
 #     liquorStore = models.ForeignKey(LiquorStore)

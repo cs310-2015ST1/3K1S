@@ -19,8 +19,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <script>
-        storeHash = localStorage.getItem("storeHash");
-
         window.onload = function() {
             timezoneInfo();
         }
@@ -118,18 +116,81 @@
         <h1 id="storeName"> </h1>
         <h2 id="storeType"> </h2>
         <h4 id="storeHour"> </h4>
+    </div>
 
+    <!-- added by Edward Sprint 2 -->
+    <div class="container">
+        
+        <h4> Comments: </h4>
+        {% for comment in comments %}
+        <div class = "container">
+            <h5>{{comment.user}}<i> says </i></h5> <p>{{comment.comment}}</p>
+            {% if user.is_authenticated %}
+                {% ifequal comment.user request.user %}
+                <script>
+                    $(document).on("click", "#editshow{{comment.pk}}", function(){
+                        $("#edit{{comment.pk}}").toggle(500);
+                    });    
+                </script>
+            <p>
+                <a href="/delete/{{comment.pk}}/{{liquorstore.storeHash}}/">Delete</a>
+                <a id="editshow{{comment.pk}}"> Edit</a>
+            </p>
+                <div class = "container" style="display:none" id="edit{{comment.pk}}">
+                    <form id="edit_form" method="post" action="/edit/{{comment.pk}}/{{liquorstore.storeHash}}/">
+
+                        {% csrf_token %}
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+
+                        {% for field in form.visible_fields %}
+                        <div class="container">
+                            {{ field.errors }}
+                            {{ field.help_text }}
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <input type="submit" name="submit" value="Edit" />
+                    </form>
+                </div>
+            
+                {% endifequal %}
+            {% else %}
+            <p>Must be a registered user to delete/edit comment</p>
+            {% endif %}
+
+        </div>
+        <hr />
+        {% endfor %}
     </div>
 
 {% if user.is_authenticated %}
-    <h1>User is authenticated {{ user.username }}!</h1>
-    <a href="/restricted/">Restricted Page</a><br />
-    <a href="/logout/">Logout</a><br />
+    <div class = "container">
+        <form id="comment_form" method="post" action="/store/{{liquorstore.storeHash}}/">
+
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+            <div class="container">
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            </div>
+            {% endfor %}
+            <input type="submit" name="submit" value="Comment" />
+        </form>
 {% else %}
-    <h1>user is not authenticated</h1>
-    <a href="/register/">Register Here</a><br />
-    <a href="/login/">Login</a><br />
+        <div class="container">
+            <h3>Must be a registered user to put comments in</h3>
+            <a href="/register/">Register Here</a><br />
+            <a href="/login/">Login</a><br />
+        </div>
 {% endif %}
+    </div>
 
 </body>
 </html>
