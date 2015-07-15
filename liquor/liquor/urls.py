@@ -12,6 +12,8 @@ urlpatterns = [
 
     # access "liquor_locator" application and indicate liquor_locator application urls to be imported
     url(r'^', include('liquor_locator.urls')), # ADD THIS NEW TUPLE!
+
+    url(r"^ratings/", include("pinax.ratings.urls")),
 ]
 
 if settings.DEBUG:

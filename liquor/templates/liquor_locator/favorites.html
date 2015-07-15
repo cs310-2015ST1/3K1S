@@ -112,33 +112,40 @@
             </div><!-- /.container-fluid -->
         </nav>
 
-
-        {% if user.is_authenticated %}
-            {% if favorites %}
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for favorite in favorites %}
-                        <tr>
-                            <td><a href="/store/{{favorite.storeHash}}" class="storeName">{{ favorite.name }}</a></td>
-                            <td><a href="/deleteFromFavorites/{{favorite.storeHash}}"> Remove </a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <strong>No favorites for the current user.</strong>
-                <br/><a href="/">Back to index</a>
-            {% endif %}
-        {% else %}
-            <h1>user is not authenticated</h1>
-            <a href="/register/">Register Here</a><br />
-            <a href="/login/">Login</a><br />
-        {% endif %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-md-offset-2">
+                    {% if user.is_authenticated %}
+                        {% if favorites %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for favorite in favorites %}
+                                        <tr>
+                                            <td><a href="/store/{{favorite.storeHash}}" class="storeName">{{ favorite.name }}</a></td>
+                                            <td><a href="/deleteFromFavorites/{{favorite.storeHash}}"> Remove </a></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <strong>No favorites for the current user.</strong>
+                            <br/><a href="/">Back to index</a>
+                        {% endif %}
+                    {% else %}
+                        <h1>user is not authenticated</h1>
+                        <a href="/register/">Register Here</a><br />
+                        <a href="/login/">Login</a><br />
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </body>
 </html>

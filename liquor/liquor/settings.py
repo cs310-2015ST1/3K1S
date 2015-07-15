@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'liquor_locator',
     'debug_toolbar',
+    'pinax.ratings',
 )
 
 MIDDLEWARE_CLASSES = (

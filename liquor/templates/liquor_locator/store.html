@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
     <!-- Latest compiled and minified CSS -->
@@ -36,7 +35,7 @@
         }
     </script>
 
-<title> 3K1S </title>
+    <title> 3K1S </title>
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -92,106 +91,121 @@
         </div><!-- /.container-fluid -->
     </nav>
     
-    <div class="container">
-        <h1> {{liquorstore.name}}</h1>
-        <h2> {{liquorstore.address}}</h2>
-        <hr />
-        <h3> {{liquorstore.storetype}} </h3>
-        <h4 id="storeHour"> </h4>
-        <script>
-            var storeHour = "{{liquorstore.hours}}"
-            var temp = storeHour.split("|");
-            var infoString = "";
-            for (j = 0; j < temp.length; j++) {
-            infoString += temp[j] + "<br>";
-            }
-            document.getElementById("storeHour").innerHTML = infoString;
-        </script>
-        {% if user.is_authenticated %}
-        <a href="/addToFavorites/{{liquorstore.storeHash}}">Add to favorites</a><br/>
-        {% endif %}
-    </div>
+    <div class="container-fluid">
+        <div class="row">
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+            <h3> {{liquorstore.storetype}} </h3>
 
-    <div class="container" id="info">
-        <h1 id="storeName"> </h1>
-        <h2 id="storeType"> </h2>
-        <h4 id="storeHour"> </h4>
-    </div>
+            {% load pinax_ratings_tags %}
+            {% overall_rating liquorstore as the_overall_rating %}
+            {{ the_overall_rating }}
+            <div id="user_rating"></div>
+            {% user_rating_js request.user.id liquorstore %}
 
-    <!-- added by Edward Sprint 2 -->
-    <div class="container">
-        <h4> Comments: </h4>
-        {% for comment in comments %}
-        <div class = "container">
-            <h5>{{comment.user}}<i> says </i></h5> <p>{{comment.comment}}</p>
-            {% if user.is_authenticated %}
-                {% ifequal comment.user request.user %}
-                <script>
-                    $(document).on("click", "#editshow{{comment.pk}}", function(){
-                        $("#edit{{comment.pk}}").toggle(500);
-                    });    
-                </script>
-            <p>
-                <a href="/delete/{{comment.pk}}/{{liquorstore.storeHash}}/">Delete</a>
-                <a id="editshow{{comment.pk}}"> Edit</a>
-            </p>
-                <div class = "container" style="display:none" id="edit{{comment.pk}}">
-                    <form id="edit_form" method="post" action="/edit/{{comment.pk}}/{{liquorstore.storeHash}}/">
-
-                        {% csrf_token %}
-                        {% for hidden in form.hidden_fields %}
-                            {{ hidden }}
-                        {% endfor %}
-
-                        {% for field in form.visible_fields %}
-                        <div class="container">
-                            {{ field.errors }}
-                            {{ field.help_text }}
-                            {{ field }}
-                        </div>
-                        {% endfor %}
-                        <input type="submit" name="submit" value="Edit" />
-                    </form>
-                </div>
-            
-                {% endifequal %}
-            {% else %}
-            <p>Must be a registered user to delete/edit comment</p>
-            {% endif %}
-
-        </div>
-        <hr />
-        {% endfor %}
-    </div>
-
-    {% if user.is_authenticated %}
-    <div class = "container">
-        <form id="comment_form" method="post" action="/store/{{liquorstore.storeHash}}/">
-
-            {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-
-            {% for field in form.visible_fields %}
-            <div class="container">
-                {{ field.errors }}
-                {{ field.help_text }}
-                {{ field }}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{liquorstore.name}} &nbsp;
+                            ({{liquorstore.address}})</th>
+                        </tr>
+                    </thead>
+                    <tbody class="hoursTable">
+                    </tbody>
+                </table>
             </div>
-            {% endfor %}
-            <input type="submit" name="submit" value="Comment" />
-        </form>
-        {% else %}
-        <div class="container">
-            <h3>Must be a registered user to put comments in</h3>
-            <a href="/register/">Register Here</a><br />
-            <a href="/login/">Login</a><br />
-        </div>
-        {% endif %}
+            <script> 
+                var d = new Date();
+                var today = d.getDay();
+                var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                today = days[today];
+                var storeHour = "{{liquorstore.hours}}"
+                var hours = storeHour.split("|");
+                for (j = 0; j < hours.length; j++) {
+                    var classToAdd = "";
+                    if (hours[j].indexOf(today) != -1) {
+                        classToAdd = " class='warning'";
+                    }
+                    $(".hoursTable").append("<tr" + classToAdd + "><td>" + hours[j] + "</td></tr>");
+                }
+            </script>
+            {% if user.is_authenticated %}
+                <a href="/addToFavorites/{{liquorstore.storeHash}}">Add to favorites</a>
+            {% endif %}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h4> Comments: </h4>
+                    {% for comment in comments %}
+
+                    <div class = "container">
+                        <h5>{{comment.user}}<i> says </i></h5> <p>{{comment.comment}}</p>
+                        {% if user.is_authenticated %}
+                            {% ifequal comment.user request.user %}
+                            <script>
+                                $(document).on("click", "#editshow{{comment.pk}}", function(){
+                                    $("#edit{{comment.pk}}").toggle(500);
+                                });    
+                            </script>
+                        <p>
+                            <a href="/delete/{{comment.pk}}/{{liquorstore.storeHash}}/">Delete</a>
+                            <a id="editshow{{comment.pk}}"> Edit</a>
+                        </p>
+                            <div class = "container" style="display:none" id="edit{{comment.pk}}">
+                                <form id="edit_form" method="post" action="/edit/{{comment.pk}}/{{liquorstore.storeHash}}/">
+
+                                    {% csrf_token %}
+                                    {% for hidden in form.hidden_fields %}
+                                        {{ hidden }}
+                                    {% endfor %}
+
+                                    {% for field in form.visible_fields %}
+                                    <div class="container">
+                                        {{ field.errors }}
+                                        {{ field.help_text }}
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
+                                    <input type="submit" name="submit" value="Edit" />
+                                </form>
+                            </div>
+                        
+                            {% endifequal %}
+                        {% else %}
+                        <p>Must be a registered user to delete/edit comment</p>
+                        {% endif %}
+                    </div>
+
+                    <hr />
+                    {% endfor %}
+
+                    <div class = "container">
+                    {% if user.is_authenticated %}
+                        <form id="comment_form" method="post" action="/store/{{liquorstore.storeHash}}/">
+                            {% csrf_token %}
+                            {% for hidden in form.hidden_fields %}
+                                {{ hidden }}
+                            {% endfor %}
+
+                            {% for field in form.visible_fields %}
+                            <div class="container">
+                                {{ field.errors }}
+                                {{ field.help_text }}
+                                {{ field }}
+                            </div>
+                            {% endfor %}
+                            <input type="submit" name="submit" value="Comment" />
+                        </form>
+                    {% else %}
+                        <h3>Must be a registered user to put comments in</h3>
+                        <a href="/register/">Register Here</a><br />
+                        <a href="/login/">Login</a><br />
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
     </div>
-
-
 
 </body>
 </html>
