@@ -40,6 +40,7 @@
 <title> 3K1S </title>
 </head>
 <body>
+{% load pinax_ratings_tags %}
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -95,13 +96,20 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-    
+
+
+{% overall_rating liquorstore as the_overall_rating %}
+<div class="overall_rating">{{ the_overall_rating }}</div>
+
+<div id="user_rating"></div>
+
     <div class="container">
         <h1> {{liquorstore.name}}</h1>
         <h2> {{liquorstore.address}}</h2>
         <hr />
         <h3> {{liquorstore.storetype}} </h3>
         <h4 id="storeHour"> </h4>
+
         <script>
             var storeHour = "{{liquorstore.hours}}"
             var temp = storeHour.split("|");
@@ -131,5 +139,6 @@
     <a href="/login/">Login</a><br />
 {% endif %}
 
+{% user_rating_js request.user liquorstore %}
 </body>
 </html>
