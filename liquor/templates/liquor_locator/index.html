@@ -55,6 +55,7 @@
             var trC = "</tr>";
             var td = "<td>";
             var tdC = "</td>";
+            var a = "<a>";
 
             {% for store in liquorstore %}
             var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}', '{{store.storeHash}}'];
@@ -63,9 +64,11 @@
 
             var tempName = '{{store.name}}';
             if (tempName.length <= 1) {
-                tempName = "Undefined";
+                tempName = "Name Undetermined";
             }
-
+            tempName = "<a href=" + window.location.origin + "/store/" +'{{store.storeHash}}' + ">" + tempName + "</a>";
+            
+            var urlToShare = window.location.origin + location;
             var tableRow = tr + td + tempName + tdC + td + '{{store.address}}' + tdC + td + '{{store.storetype}}' + tdC + trC;
 
             $(".storeTable").append(tableRow);
@@ -345,7 +348,6 @@
                 document.getElementById("timezoneText").innerHTML = "Pacific time";
             }
         }
-
     </script>
 
     <title> 3K1S </title>
