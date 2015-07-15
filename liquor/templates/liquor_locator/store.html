@@ -26,15 +26,14 @@
         }
 
         function timezoneInfo() {
-        var d = new Date()
-        var n = d.getTimezoneOffset();
-        console.log(n);
-        if (n > 420 || n < 420) {
-            document.getElementById("timezoneText").innerHTML = "Wrong timezone";
-        } else {
-            document.getElementById("timezoneText").innerHTML = "PDT/PST time";
+            var d = new Date()
+            var n = d.getTimezoneOffset();
+            if (n > 420 || n < 420) {
+                document.getElementById("timezoneText").innerHTML = "Wrong timezone";
+            } else {
+                document.getElementById("timezoneText").innerHTML = "Pacific time";
+            }
         }
-    }
     </script>
 
 <title> 3K1S </title>
@@ -58,28 +57,24 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
                     <li class="active"><a href="#">Store <span class="sr-only">(current)</span></a></li>
-                    <p class="navbar-text" id="timezoneText"></p> 
-                    <!--
-                    <li><a href="/liquor_locator/about/">About</a></li>
-
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Menu <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Placeholder1</a></li>
-                            <li><a href="#">Placeholder2</a></li>
-                            <li><a href="#">Placeholder3</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Placeholder4</a></li>
-                        </ul>
-                    </li>
-                    -->
+                    <p class="navbar-text" id="timezoneText"></p>
                 </ul>
 
-                <form class="nav navbar-nav navbar-right form-inline" method="post" action="/session/">
+                {% if user.is_authenticated %}
+                {% else %}
+                <form class="navbar-nav navbar-right form-inline" method="post" action="/register/">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-default" style="margin-top: 7px;">Register</button>
+                </form>
+                {% endif %}
+                
+                <div class="nav navbar-nav navbar-right form-inline">
+                    <form method="post" action="/session/">
                     {% csrf_token %}
                     {% if user.is_authenticated %}
                         <div class="form-group">
-                            <p class="navbar-text">Hello {{ user.username }}! </p>  
+                            <p class="navbar-text">Hello {{ user.username }}! </p>
+                            <a class="btn btn-default" href="/favorites/" role="button" style="margin-top: 7px;">Favorites</a>
                             <button type="submit" class="btn btn-default" style="margin-top: 7px;">Log out</button>
                         </div>
                     {% else %}
@@ -89,9 +84,10 @@
                         <div class="form-group" style="margin-top: 7px;">
                             <input type="password" class="form-control" name="password" placeholder="Password">
                         </div>
-                        <button type="submit" class="btn btn-default" style="margin-top: 7px;">Sign in</button>
+                        <button type="submit" class="btn btn-default" style="margin-top: 7px; margin-right: 5px">Sign in</button>
                     {% endif %}
-                </form>
+                    </form>
+                </div>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
@@ -111,25 +107,91 @@
             }
             document.getElementById("storeHour").innerHTML = infoString;
         </script>
-        
+        {% if user.is_authenticated %}
+        <a href="/addToFavorites/{{liquorstore.storeHash}}">Add to favorites</a><br/>
+        {% endif %}
     </div>
 
     <div class="container" id="info">
         <h1 id="storeName"> </h1>
         <h2 id="storeType"> </h2>
         <h4 id="storeHour"> </h4>
-
     </div>
 
-{% if user.is_authenticated %}
-    <h1>User is authenticated {{ user.username }}!</h1>
-    <a href="/restricted/">Restricted Page</a><br />
-    <a href="/logout/">Logout</a><br />
-{% else %}
-    <h1>user is not authenticated</h1>
-    <a href="/register/">Register Here</a><br />
-    <a href="/login/">Login</a><br />
-{% endif %}
+    <!-- added by Edward Sprint 2 -->
+    <div class="container">
+        <h4> Comments: </h4>
+        {% for comment in comments %}
+        <div class = "container">
+            <h5>{{comment.user}}<i> says </i></h5> <p>{{comment.comment}}</p>
+            {% if user.is_authenticated %}
+                {% ifequal comment.user request.user %}
+                <script>
+                    $(document).on("click", "#editshow{{comment.pk}}", function(){
+                        $("#edit{{comment.pk}}").toggle(500);
+                    });    
+                </script>
+            <p>
+                <a href="/delete/{{comment.pk}}/{{liquorstore.storeHash}}/">Delete</a>
+                <a id="editshow{{comment.pk}}"> Edit</a>
+            </p>
+                <div class = "container" style="display:none" id="edit{{comment.pk}}">
+                    <form id="edit_form" method="post" action="/edit/{{comment.pk}}/{{liquorstore.storeHash}}/">
+
+                        {% csrf_token %}
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+
+                        {% for field in form.visible_fields %}
+                        <div class="container">
+                            {{ field.errors }}
+                            {{ field.help_text }}
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <input type="submit" name="submit" value="Edit" />
+                    </form>
+                </div>
+            
+                {% endifequal %}
+            {% else %}
+            <p>Must be a registered user to delete/edit comment</p>
+            {% endif %}
+
+        </div>
+        <hr />
+        {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class = "container">
+        <form id="comment_form" method="post" action="/store/{{liquorstore.storeHash}}/">
+
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+            <div class="container">
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            </div>
+            {% endfor %}
+            <input type="submit" name="submit" value="Comment" />
+        </form>
+        {% else %}
+        <div class="container">
+            <h3>Must be a registered user to put comments in</h3>
+            <a href="/register/">Register Here</a><br />
+            <a href="/login/">Login</a><br />
+        </div>
+        {% endif %}
+    </div>
+
+
 
 </body>
 </html>

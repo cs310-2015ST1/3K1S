@@ -37,9 +37,21 @@ class LiquorStore(models.Model):
 
     objects = LiquorStoreManager()
 
+    fav_user = models.ManyToManyField(User)
+
     def __unicode__(self):
         return self.name
 
+class Comment(models.Model):
+    user=models.OneToOneField(User)
+    comment = models.CharField(max_length=128)
+    isRemoved = models.BooleanField(default=False)
+    createdDate = models.DateTimeField(auto_now_add=True)
+    liquorStore = models.ForeignKey(LiquorStore, null=True)
+    user = models.ForeignKey(User, null=True)
+    
+    def __unicode__(self):
+        return self.comment
 
 class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.

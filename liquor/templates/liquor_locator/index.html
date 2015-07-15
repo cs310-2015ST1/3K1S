@@ -34,234 +34,303 @@
         };
         var search_markers = [];
 
-
         window.onload = function() {
             timezoneInfo();
             getStores();
             geoFindMe();
         }
 
-/*
-* storelist = array of store info(name, lat, lon, store type)
-* sets storelist
-*/
-function getStores(){
-    var i = 0;
-    {% for store in liquorstore %}
-    var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}', '{{store.storeHash}}'];
-    storelist[i] = eachStore;
-    i++;
-    {% endfor %}
-}
+        /*
+        * storelist = array of store info(name, lat, lon, store type)
+        * sets storelist
+        */
+        function getStores(){
+            var i = 0;
+            {% for store in liquorstore %}
+            var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}', '{{store.storeHash}}'];
+            storelist[i] = eachStore;
+            i++;
+            {% endfor %}
+        }
 
-/*
-* Finds geolocation of user's location through Browser
-*/
-function geoFindMe(){
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(success, error, geo_options);
-    }else{
-        alert("Geolocation services are not supported by your web browser.");
-    }
-
-    function success(position) {
-        myLat = position.coords.latitude;
-        myLon = position.coords.longitude;
-        document.getElementById("latText").value = myLat;
-        document.getElementById("lonText").value = myLon;
-        initialize(myLat, myLon);
-    }
-
-    function error(error) {
-        alert("Unable to retrieve your location due to "+error.code + " : " + error.message);
-    }
-
-    var geo_options = {
-        enableHighAccuracy: true,
-        maximumAge : 30000,
-        timeout : 27000
-    }
-}
-
-/*
-* Initialization of google map, with user location and storelist from getAllStores();
-*/
-function initialize(latitude, longitude){
-
-//Google Map initialization
-var mapCanvas = document.getElementById('map-canvas');
-var myLatLon = new google.maps.LatLng(latitude, longitude);
-var mapOptions={
-    center: myLatLon,
-    zoom: 15,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-}
-
-map = new google.maps.Map(mapCanvas, mapOptions);
-
-
-// Andrew's addition
-var input = document.getElementById('map-search');
-
-var searchBox = new google.maps.places.SearchBox(
-    /** @type {HTMLInputElement} */(input));
-
-google.maps.event.addListener(searchBox, 'places_changed', function() {
-    var places = searchBox.getPlaces(); // Google API
-
-    if (places.length == 0) {
-        return 0;
-    }
-    for (var i = 0, search_marker; search_marker = search_markers[i]; i++) {
-        search_marker.setMap(null);
-    }
-
-    search_markers = [];
-    var bounds = new google.maps.LatLngBounds();
-    for (var i = 0, place; place = places[i]; i++) {
-        var image = {
-            url: place.icon,
-            size: new google.maps.Size(71, 71),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(25, 25)
-        };
-
-        var search_marker = new google.maps.Marker({
-            map: map,
-            icon: image,
-            title: place.name,
-            position: place.geometry.location
-        });
-
-        search_markers.push(search_marker);
-        bounds.extend(place.geometry.location);
-    }
-    map.panTo(bounds.getCenter());
-});
-
-var userMarker = new google.maps.Marker({
-    position: myLatLon,
-    map: map,
-    icon: user,
-});
-
-create_marker(storelist);
-}
-
-// if checkbox is checked or not...
-$(document).ready(function() {
-    $(':checkbox').change(function() {
-        var id = $(this).attr('id');
-        if (!this.checked) {
-            for (i = 0; i < markers[id].length; i++) {
-                markers[id][i].setVisible(false);
+        /*
+        * Finds geolocation of user's location through Browser
+        */
+        function geoFindMe(){
+            if(navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(success, error, geo_options);
+            }else{
+                alert("Geolocation services are not supported by your web browser.");
             }
-        } else {
-            for (i = 0; i < markers[id].length; i++) {
-                markers[id][i].setVisible(true);
+
+            function success(position) {
+                myLat = position.coords.latitude;
+                myLon = position.coords.longitude;
+                document.getElementById("latText").value = myLat;
+                document.getElementById("lonText").value = myLon;
+                initialize(myLat, myLon);
+            }
+
+            function error(error) {
+                alert("Unable to retrieve your location due to "+error.code + " : " + error.message);
+            }
+
+            var geo_options = {
+                enableHighAccuracy: true,
+                maximumAge : 30000,
+                timeout : 27000
             }
         }
-    });
 
-    $('form[name=distanceSlider]').submit(function(){
-        $.post($(this).attr('action'), $(this).serialize(), function(res){
-            deleteMarkers();
-            storelist = [];
-            for (var i = 0; i < res.length; i++) {
-                var obj = res[i];
-                var temp = [];
-                temp.push(obj["name"]);
-                temp.push(obj["lat"]);
-                temp.push(obj["lon"]);
-                temp.push(obj["storetype"]);
-                temp.push(obj["hours"]);
-                temp.push(obj["storeHash"]);
-                storelist[i] = temp;
+        /*
+        * Initialization of google map, with user location and storelist from getAllStores();
+        */
+        function initialize(latitude, longitude){
+            //Google Map initialization
+            var mapCanvas = document.getElementById('map-canvas');
+            var myLatLon = new google.maps.LatLng(latitude, longitude);
+            var mapOptions={
+                center: myLatLon,
+                zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
             }
-            create_marker();
-        });
-        return false; // prevent default action
-    });
 
-    $('#rangeText').text($('#distanceSlider').val() + " km");
+            map = new google.maps.Map(mapCanvas, mapOptions);
 
-    $('#distanceSlider').on('change', function () {
-        $('#rangeText').text($(this).val() + " km");
-    });
-});
 
-function create_marker() {
-    for (i = 0; i < storelist.length; i++) {
-        // storelist[i][0]: store name
-        // storelist[i][1]: latitude
-        // storelist[i][2]: longitude
-        // storelist[i][3]: store category
-        // -> one of: BC Liquor Store
-        //            Private Liquor Store
-        //            Proposed Store Location
-        var infowindow = new google.maps.InfoWindow();
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(storelist[i][1], storelist[i][2]),
-            map: map
-        });
-        markers[storelist[i][3]].push(marker);
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {
-                var temp = storelist[i][4].split("|");
-                infowindowString = "<div class='container'><h3>" + storelist[i][0]
-                + "</h3><hr/><h4>" + storelist[i][3] + "</h4><br>" + "<div class='container'>";
+            // Andrew's addition
+            var input = document.getElementById('map-search');
 
-                for (j = 0; j < temp.length; j++) {
-                    infowindowString += temp[j] + "<br>";
+            var searchBox = new google.maps.places.SearchBox(
+                /** @type {HTMLInputElement} */(input));
+
+            google.maps.event.addListener(searchBox, 'places_changed', function() {
+                var places = searchBox.getPlaces(); // Google API
+
+                if (places.length == 0) {
+                    return 0;
+                }
+                for (var i = 0, search_marker; search_marker = search_markers[i]; i++) {
+                    search_marker.setMap(null);
                 }
 
-                var location = "/store/" + storelist[i][5];
+                search_markers = [];
+                var bounds = new google.maps.LatLngBounds();
+                for (var i = 0, place; place = places[i]; i++) {
+                    var image = {
+                        url: place.icon,
+                        size: new google.maps.Size(71, 71),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(25, 25)
+                    };
 
-                infowindowString += "</div><br><a href='";
-                infowindowString += location;
-                infowindowString += "'> Show Place </a><br>";
-                var urlToShare = window.location.origin + location;
-                infowindowString += "<a href='https://www.facebook.com/sharer/sharer.php?u=";
-                infowindowString += urlToShare;
+                    var search_marker = new google.maps.Marker({
+                        map: map,
+                        icon: image,
+                        title: place.name,
+                        position: place.geometry.location
+                    });
 
-                infowindowString += "')><img src='http://i.imgur.com/q0hxkbY.png'></a>";
+                    search_markers.push(search_marker);
+                    bounds.extend(place.geometry.location);
+                }
+                map.panTo(bounds.getCenter());
+            });
 
-                infowindow.setContent(infowindowString);
-                infowindow.open(map, marker);
-            }
-        })(marker, i));
-    }
-}
+            var userMarker = new google.maps.Marker({
+                position: myLatLon,
+                map: map,
+                icon: user,
+            });
 
-// Sets the map on all markers in the array.
-function deleteMarkers() {
-    for (var i in markers) {
-        for (var j = 0; j < markers[i].length; j++) {
-            markers[i][j].setMap(null);
+            create_marker(storelist);
         }
-    }
-    markers = {
-            "BC Liquor Store": [],
-            "Private Liquor Store": [],
-            "Proposed Store Location": []
-    };
-    storelist = null;
-}
 
-function timezoneInfo() {
-    var d = new Date()
-    var n = d.getTimezoneOffset();
-    if (n > 420 || n < 420) {
-        document.getElementById("timezoneText").innerHTML = "Wrong timezone";
-    } else {
-        document.getElementById("timezoneText").innerHTML = "Pacific time";
-    }
-}
+        // if checkbox is checked or not...
+        $(document).ready(function() {
+            $(':checkbox').change(function() {
+                var id = $(this).attr('id');
+                if (!this.checked) {
+                    for (i = 0; i < markers[id].length; i++) {
+                        markers[id][i].setVisible(false);
+                    }
+                } else {
+                    for (i = 0; i < markers[id].length; i++) {
+                        markers[id][i].setVisible(true);
+                    }
+                }
+            });
 
-</script>
+            $('form[name=distanceSlider]').submit(function(){
+                $.post($(this).attr('action'), $(this).serialize(), function(res){
+                    deleteMarkers();
+                    storelist = [];
+                    for (var i = 0; i < res.length; i++) {
+                        var obj = res[i];
+                        var temp = [];
+                        temp.push(obj["name"]);
+                        temp.push(obj["lat"]);
+                        temp.push(obj["lon"]);
+                        temp.push(obj["storetype"]);
+                        temp.push(obj["hours"]);
+                        temp.push(obj["storeHash"]);
+                        storelist[i] = temp;
+                    }
+                    create_marker();
+                });
+                return false; // prevent default action
+            });
 
-<title> 3K1S </title>
+            $('#rangeText').text($('#distanceSlider').val() + " km");
+
+            $('#distanceSlider').on('change', function () {
+                $('#rangeText').text($(this).val() + " km");
+            });
+        });
+
+        function determine_icon(store) {
+            var grey_marker = "http://maps.google.com/mapfiles/marker_grey.png";
+            var green_marker = "http://maps.google.com/mapfiles/marker_green.png";
+            var orange_marker = "http://maps.google.com/mapfiles/marker_orange.png";
+            var purple_marker = "http://maps.google.com/mapfiles/marker_purple.png";
+            var red_marker = "http://maps.google.com/mapfiles/marker.png";
+
+            // storetype = "Private Liquor Store" || "Proposed Liquor Store" -> return purple marker
+            var storetype = store[3];
+            if (store[3] == "Private Liquor Store" || store[3] == "Proposed Store Location") {
+                return purple_marker;
+            }
+
+            // hours length = 0 -> hours is unavailable, return orange marker
+            var hours = store[4];
+            if (hours.length <= 0) return orange_marker;
+            
+            days = hours.split("|");
+
+            var d = new Date();
+            var today = d.getDay();
+            today = today == 0 ? 6 : today - 1;
+
+            // convert JavaScript date object into string
+            // this will result in an integer value in this format - hhmm
+            var now = parseInt(d.getHours().toString() + d.getMinutes().toString());
+
+            if (days.length == 7) {
+                var re = /\d+:\d{2}\s*[ap]m/g;
+                var hourArray = days[today].match(re);
+                // hourArray[0] -> today's opening hour
+                // hourArray[1] -> today's closing hour
+                if (hourArray == null) return orange_marker;
+                if (now < convert_hour(hourArray[0]) || now > convert_hour(hourArray[1])) {
+                    return red_marker;
+                } else {
+                    return green_marker;
+                }
+            } else {
+                return orange_marker;
+            }
+        }
+
+        function convert_hour(str) {
+            if (str.length <= 0) return;
+            
+            var info = str.split(":");
+            var hour = parseInt(info[0]);
+            var mins = parseInt(info[1]);
+
+            if (mins == 0) {
+                mins = "00";
+            } else {
+                mins = mins.toString();
+            }
+
+            if (str.search(/pm/) != -1) {
+                hour += 12;
+                hour = hour == 24 ? 0 : hour;
+                hour = hour.toString();
+            }
+            var now = hour + mins;
+
+            return parseInt(now);
+        }
+
+        function create_marker() {
+            for (i = 0; i < storelist.length; i++) {
+                // storelist[i][0]: store name
+                // storelist[i][1]: latitude
+                // storelist[i][2]: longitude
+                // storelist[i][3]: store category
+                // -> one of: BC Liquor Store
+                //            Private Liquor Store
+                //            Proposed Store Location
+                // storelist[i][4]: store hours
+                var infowindow = new google.maps.InfoWindow();
+
+                var icon_url = determine_icon(storelist[i]);
+                
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(storelist[i][1], storelist[i][2]),
+                    map: map,
+                    icon: icon_url
+                });
+                markers[storelist[i][3]].push(marker);
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        var temp = storelist[i][4].split("|");
+                        infowindowString = "<div class='container'><h3>" + storelist[i][0]
+                        + "</h3><hr/><h4>" + storelist[i][3] + "</h4><br>" + "<div class='container'>";
+
+                        for (j = 0; j < temp.length; j++) {
+                            infowindowString += temp[j] + "<br>";
+                        }
+
+                        var location = "/store/" + storelist[i][5];
+
+                        infowindowString += "</div><br><a href='";
+                        infowindowString += location;
+                        infowindowString += "'> Show Place </a><br>";
+                        var urlToShare = window.location.origin + location;
+                        infowindowString += "<a href='https://www.facebook.com/sharer/sharer.php?u=";
+                        infowindowString += urlToShare;
+
+                        infowindowString += "')><img src='http://i.imgur.com/q0hxkbY.png'></a>";
+
+                        infowindow.setContent(infowindowString);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, i));
+            }
+        }
+
+        // Sets the map on all markers in the array.
+        function deleteMarkers() {
+            for (var i in markers) {
+                for (var j = 0; j < markers[i].length; j++) {
+                    markers[i][j].setMap(null);
+                }
+            }
+            markers = {
+                    "BC Liquor Store": [],
+                    "Private Liquor Store": [],
+                    "Proposed Store Location": []
+            };
+            storelist = null;
+        }
+
+        function timezoneInfo() {
+            var d = new Date()
+            var n = d.getTimezoneOffset();
+            if (n > 420 || n < 420) {
+                document.getElementById("timezoneText").innerHTML = "Wrong timezone";
+            } else {
+                document.getElementById("timezoneText").innerHTML = "Pacific time";
+            }
+        }
+
+    </script>
+
+    <title> 3K1S </title>
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -282,28 +351,24 @@ function timezoneInfo() {
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
                     <li><a href="#">Store</a></li>
-                    <p class="navbar-text" id="timezoneText"></p> 
-                    <!--
-                    <li><a href="/liquor_locator/about/">About</a></li>
-                    
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Menu <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Placeholder1</a></li>
-                            <li><a href="#">Placeholder2</a></li>
-                            <li><a href="#">Placeholder3</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Placeholder4</a></li>
-                        </ul>
-                    </li>
-                    -->
+                    <p class="navbar-text" id="timezoneText"></p>
                 </ul>
-
-                <form class="nav navbar-nav navbar-right form-inline" method="post" action="/session/">
+                
+                {% if user.is_authenticated %}
+                {% else %}
+                <form class="navbar-nav navbar-right form-inline" method="post" action="/register/">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-default" style="margin-top: 7px;">Register</button>
+                </form>
+                {% endif %}
+                
+                <div class="nav navbar-nav navbar-right form-inline">
+                    <form method="post" action="/session/">
                     {% csrf_token %}
                     {% if user.is_authenticated %}
                         <div class="form-group">
-                            <p class="navbar-text">Hello {{ user.username }}! </p>  
+                            <p class="navbar-text">Hello {{ user.username }}! </p>
+                            <a class="btn btn-default" href="/favorites/" role="button" style="margin-top: 7px;">Favorites</a>
                             <button type="submit" class="btn btn-default" style="margin-top: 7px;">Log out</button>
                         </div>
                     {% else %}
@@ -313,9 +378,11 @@ function timezoneInfo() {
                         <div class="form-group" style="margin-top: 7px;">
                             <input type="password" class="form-control" name="password" placeholder="Password">
                         </div>
-                        <button type="submit" class="btn btn-default" style="margin-top: 7px;">Sign in</button>
+                        <button type="submit" class="btn btn-default" style="margin-top: 7px; margin-right: 5px">Sign in</button>
                     {% endif %}
-                </form>
+                    </form>
+                </div>
+                
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
@@ -365,15 +432,5 @@ function timezoneInfo() {
             </div>
         </div>  
     </div>
-{% if user.is_authenticated %}
-    <h1>User is authenticated {{ user.username }}!</h1>
-    <a href="/restricted/">Restricted Page</a><br />
-    <a href="/logout/">Logout</a><br />
-{% else %}
-    <h1>user is not authenticated</h1>
-    <a href="/register/">Register Here</a><br />
-    <a href="/login/">Login</a><br />
-{% endif %}
-
 </body>
 </html>
