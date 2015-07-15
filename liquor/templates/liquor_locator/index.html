@@ -235,7 +235,10 @@
 
             // convert JavaScript date object into string
             // this will result in an integer value in this format - hhmm
-            var now = parseInt(d.getHours().toString() + d.getMinutes().toString());
+            var hour = d.getHours().toString();
+            var min = d.getMinutes().toString();
+            if (min.length == 1) min = "0" + min;
+            var now = parseInt(hour + min, 10);
 
             if (days.length == 7) {
                 var re = /\d+:\d{2}\s*[ap]m/g;
@@ -257,13 +260,14 @@
             if (str.length <= 0) return;
             
             var info = str.split(":");
-            var hour = parseInt(info[0]);
-            var mins = parseInt(info[1]);
+            var hour = parseInt(info[0], 10);
+            var mins = parseInt(info[1], 10);
 
             if (mins == 0) {
                 mins = "00";
             } else {
                 mins = mins.toString();
+                if (mins.length == 1) mins = "0" + mins;
             }
 
             if (str.search(/pm/) != -1) {
@@ -272,8 +276,7 @@
                 hour = hour.toString();
             }
             var now = hour + mins;
-
-            return parseInt(now);
+            return parseInt(now, 10);
         }
 
         function create_marker() {
