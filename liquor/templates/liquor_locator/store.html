@@ -98,11 +98,6 @@
     </nav>
 
 
-{% overall_rating liquorstore as the_overall_rating %}
-<div class="overall_rating">{{ the_overall_rating }}</div>
-
-<div id="user_rating"></div>
-
     <div class="container">
         <h1> {{liquorstore.name}}</h1>
         <h2> {{liquorstore.address}}</h2>
@@ -129,6 +124,10 @@
 
     </div>
 
+{% overall_rating liquorstore as the_overall_rating %}
+<div class="overall_rating">{{ the_overall_rating }}</div>
+<div id="user_rating"></div>
+
 {% if user.is_authenticated %}
     <h1>User is authenticated {{ user.username }}!</h1>
     <a href="/restricted/">Restricted Page</a><br />
@@ -139,6 +138,6 @@
     <a href="/login/">Login</a><br />
 {% endif %}
 
-{% user_rating_js request.user liquorstore %}
+{% user_rating_js request.user.id liquorstore %}
 </body>
 </html>
