@@ -21,6 +21,10 @@
     <!-- Google maps -->
     <script src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false"></script>
 
+    <!-- data table -->
+    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    
     <script>
         var user = 'http://www.robotwoods.com/dev/misc/bluecircle.png';
         var myLat;
@@ -38,6 +42,7 @@
             timezoneInfo();
             getStores();
             geoFindMe();
+            $('#store_list').dataTable();
         }
 
         /*
@@ -46,10 +51,24 @@
         */
         function getStores(){
             var i = 0;
+            var tr = "<tr>";
+            var trC = "</tr>";
+            var td = "<td>";
+            var tdC = "</td>";
+
             {% for store in liquorstore %}
             var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}', '{{store.storeHash}}'];
             storelist[i] = eachStore;
             i++;
+
+            var tempName = '{{store.name}}';
+            if (tempName.length <= 1) {
+                tempName = "Undefined";
+            }
+
+            var tableRow = tr + td + tempName + tdC + td + '{{store.address}}' + tdC + td + '{{store.storetype}}' + tdC + trC;
+
+            $(".storeTable").append(tableRow);
             {% endfor %}
         }
 
@@ -349,7 +368,7 @@
             <div class="collapse navbar-collapse" id="3K1S-navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Store</a></li>
+                    <li><a href="#" role="button" class="btn disabled">Store</a></li>
                     <p class="navbar-text" id="timezoneText"></p>
                 </ul>
                 
@@ -395,7 +414,7 @@
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane active" id="map">
+                    <div class="tab-pane fade in active" id="map">
                         <div class="col-md-8"><br>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="map-search" placeholder="Search">
@@ -438,11 +457,28 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="tab-pane" id="list">
-                        <p> Maybe tabular view of the store list goes here </p>
-                    </div>
-                </div>
+                    </div><!-- /.tab-pane -->
+
+                    <div class="tab-pane fade" id="list">
+                    <br>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered" id="store_list" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Address</th>
+                                            <th>Store Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="storeTable">
+                                        
+                                    </tbody>
+                                </table>
+                            </div><!-- /.table-responsive -->
+                        </div><!-- /.row -->
+                    </div> <!-- /.tab-pane -->
+                </div> <!-- /.tab-content -->
             </div>
         </div>  
     </div>
