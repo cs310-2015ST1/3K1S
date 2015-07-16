@@ -14,8 +14,11 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ('website', 'picture')
 
+
+#<input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
 class CommentForm(forms.ModelForm):
-    comment = forms.CharField(max_length=128, help_text="Comment:", initial="")
+    comment = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control input-lg', 'placeholder': 'Comment',
+        'aria-describedby': 'addon1'}))
 
     class Meta:
         # Provide an association between the ModelForm and a model
