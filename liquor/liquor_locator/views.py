@@ -58,7 +58,6 @@ def store(request, store_id):
         content = request.POST.get('comment')
     
         if form.is_valid():
-            
             comment = form.save(commit=False)
             comment.user = request.user
             comment.comment = content
@@ -83,9 +82,10 @@ def store(request, store_id):
 def deleteComment(request, comment_id, store_id):
     user = request.user
     comment = Comment.objects.get(pk=comment_id)
-    comment.delete()
-
-    return store(request, store_id)
+    comment.delete() 
+    path = request.path.split("/")
+    # path[3] is the store hash
+    return HttpResponseRedirect('/store/' + path[3] + '/')
 
 def editComment(request, comment_id, store_id):
     liquorstore = LiquorStore.objects.get(storeHash = store_id)

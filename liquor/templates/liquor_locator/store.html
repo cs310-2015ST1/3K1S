@@ -33,9 +33,15 @@
                 document.getElementById("timezoneText").innerHTML = "Pacific time";
             }
         }
+        $("#commenter").keypress(function(event) {
+            if (event.which == 13) {
+                event.preventDefault();
+                $("#comment-form").submit();
+            }
+        });
     </script>
 
-    <title> 3K1S </title>
+    <title> {{ liquorstore.name }} </title>
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -183,7 +189,7 @@
                         
                             {% endifequal %}
                         {% else %}
-                        <p>Must be a registered user to delete/edit comment</p>
+                        <p>Must be a registered user to write comments!</p>
                         {% endif %}
                     </div>
 
@@ -200,7 +206,7 @@
                                     {{ field }}
                                 {% endfor %}
                                 <span class="input-group-addon">
-                                    <a href="#" onclick="$(this).closest('form').submit()"> Comment </a>
+                                    Anonymous?
                                 </span>  
                         </div>
                     </form>
