@@ -114,6 +114,10 @@ for (i in 1:nrow(data.file[data.file$type == "BC Liquor Store",])) {
   haver.dist <- apply(distances[, c("lat1", "lat2", "lon1", "lon2")], 1,
                       function(x) distHaversine(c(x["lon1"], x["lat1"]), c(x["lon2"], x["lat2"])))
 
+  # since it chooses the minimum distance between two lat lon points,
+  # there is no need to test that these pairs are correctly matched up
+  # It will however carry a bit of margin of error to have a wrong pair,
+  # if the datasets used have inaccurate information about liquor stores
   store.data.index <- match(min(haver.dist), haver.dist)
   
   # add new information to data.file
@@ -132,8 +136,9 @@ write.csv(data.file, "liquor/static/data_hours_phone.csv", row.names = FALSE)
 data.file <- read.csv("liquor/static/data_hours_phone.csv", stringsAsFactors = FALSE)
 
 # the hours cell of BC Liquor Store should contain more than 0 character
-# the hours cell of Private Liquor Store and others should contain 0 character
+# the hours cell of Private Liquor Store and others should contain 0 character (null / not available)
 all(lapply(data.file[data.file$type == "BC Liquor Store",]$hours, function(x) nchar(x) > 0) == TRUE)
 all(lapply(data.file[data.file$type == "Private Liquor Store",]$hours, function(x) nchar(x) == 0) == TRUE)
 all(lapply(data.file[data.file$type == "Proposed Store Location",]$hours, function(x) nchar(x) == 0) == TRUE)
+
 
