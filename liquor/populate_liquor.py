@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_PATH = os.path.join(BASE_DIR, 'static')
 
 def populate():
-    dataFeed = os.path.join(STATIC_PATH, 'data_hours.csv')
+    dataFeed = os.path.join(STATIC_PATH, 'data_hours_phone.csv')
     LiquorStore.objects.all().delete()
     with open(dataFeed, 'rb') as csvfile:
         storeinfo = csv.reader(csvfile, delimiter=',')
@@ -26,8 +26,10 @@ def populate():
             store.lat = row[4]
             store.lon = row[5]
             store.hours = row[6]
+            store.phone = row[7]
+
             # String concat & hash the string -> unique store ID
-            stringToHash = row[1] + row[2] + row[3] + row[4] + row[5] + row[6]
+            stringToHash = row[1] + row[2] + row[3] + row[4] + row[5] + row[6] + row[7]
             md5Hash = hashlib.md5(stringToHash)
             print(md5Hash)
             store.storeHash = md5Hash.hexdigest()

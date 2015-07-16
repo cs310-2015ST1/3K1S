@@ -34,6 +34,7 @@ class LiquorStore(models.Model):
     storetype = models.CharField(max_length=64, blank=True)
     hours = models.CharField(max_length=300, blank=True)
     storeHash = models.CharField(max_length=32, blank=True)
+    phone = models.CharField(max_length=32, blank=True)
 
     objects = LiquorStoreManager()
 

@@ -58,7 +58,7 @@
             var a = "<a>";
 
             {% for store in liquorstore %}
-            var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}', '{{store.storeHash}}'];
+            var eachStore = ['{{store.name}}', '{{store.lat}}', '{{store.lon}}', '{{store.storetype}}', '{{store.hours}}', '{{store.storeHash}}', '{{store.phone}}'];
             storelist[i] = eachStore;
             i++;
 
@@ -197,6 +197,7 @@
                         temp.push(obj["storetype"]);
                         temp.push(obj["hours"]);
                         temp.push(obj["storeHash"]);
+                        temp.push(obj["phone"]);
                         storelist[i] = temp;
                     }
                     create_marker();
@@ -312,9 +313,13 @@
                         infowindowString += "')><img src='http://i.imgur.com/q0hxkbY.png'></a>";
                         infowindowString += "</div><div class='jumbotron'>";
 
+                        // hours information
                         for (j = 0; j < temp.length; j++) {
                             infowindowString += temp[j] + "<br>";
                         }
+
+                        
+
                         infowindowString += "</div>";
                         infowindow.setContent(infowindowString);
                         infowindow.open(map, marker);
