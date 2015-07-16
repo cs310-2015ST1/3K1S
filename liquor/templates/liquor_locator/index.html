@@ -318,7 +318,10 @@
                             infowindowString += temp[j] + "<br>";
                         }
 
-                        infowindowString += "Phone: " + storelist[i][6];
+                        // phone number information. add only if it exists
+                        if (storelist[i][6].length > 0) {
+                            infowindowString += "Phone: " + storelist[i][6];
+                        }
 
                         infowindowString += "</div>";
                         infowindow.setContent(infowindowString);
