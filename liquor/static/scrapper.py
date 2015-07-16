@@ -1,2 +1,0 @@
-from HTMLParser import HTMLParser
-

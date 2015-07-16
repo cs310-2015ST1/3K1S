@@ -299,27 +299,23 @@
                     icon: icon_url
                 });
                 markers[storelist[i][3]].push(marker);
+
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
                     return function() {
+                        var location = "/store/" + storelist[i][5];
+                        var urlToShare = window.location.origin + location;
                         var temp = storelist[i][4].split("|");
-                        infowindowString = "<div class='container'><h3>" + storelist[i][0]
-                        + "</h3><hr/><h4>" + storelist[i][3] + "</h4><br>" + "<div class='container'>";
+                        infowindowString = "<div class='page-header'><h3>" + storelist[i][0]
+                        + "&nbsp;(" + storelist[i][3] + ")</h3>"+ "<a href='" + location + "'> Go to store </a>";
+                        infowindowString += "<a href='https://www.facebook.com/sharer/sharer.php?u=";
+                        infowindowString += urlToShare;
+                        infowindowString += "')><img src='http://i.imgur.com/q0hxkbY.png'></a>";
+                        infowindowString += "</div><div class='jumbotron'>";
 
                         for (j = 0; j < temp.length; j++) {
                             infowindowString += temp[j] + "<br>";
                         }
-
-                        var location = "/store/" + storelist[i][5];
-
-                        infowindowString += "</div><br><a href='";
-                        infowindowString += location;
-                        infowindowString += "'> Show Place </a><br>";
-                        var urlToShare = window.location.origin + location;
-                        infowindowString += "<a href='https://www.facebook.com/sharer/sharer.php?u=";
-                        infowindowString += urlToShare;
-
-                        infowindowString += "')><img src='http://i.imgur.com/q0hxkbY.png'></a>";
-
+                        infowindowString += "</div>";
                         infowindow.setContent(infowindowString);
                         infowindow.open(map, marker);
                     }

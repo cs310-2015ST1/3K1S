@@ -17,7 +17,7 @@ class UserProfileForm(forms.ModelForm):
 
 #<input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
 class CommentForm(forms.ModelForm):
-    comment = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control input-lg', 'placeholder': 'Comment',
+    comment = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Comment',
         'aria-describedby': 'addon1'}))
 
     class Meta:

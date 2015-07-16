@@ -99,8 +99,9 @@ data.file <- read.csv("liquor/static/data.csv", stringsAsFactors = FALSE)
 
 class(data.file) == class(store.data)
 
-# add hours column
+# add hours & phone columns
 data.file$hours <- ""
+data.file$phone <- ""
 
 # cross-match lat lons of two different datasets to determine their relationships
 for (i in 1:nrow(data.file[data.file$type == "BC Liquor Store",])) {
@@ -114,10 +115,13 @@ for (i in 1:nrow(data.file[data.file$type == "BC Liquor Store",])) {
                       function(x) distHaversine(c(x["lon1"], x["lat1"]), c(x["lon2"], x["lat2"])))
 
   store.data.index <- match(min(haver.dist), haver.dist)
+  
+  # add new information to data.file
   data.file$hours[data.file.index] <- store.data$Hours[store.data.index]
+  data.file$phone[data.file.index] <- store.data$Phone[store.data.index]
 }
 
-write.csv(data.file, "liquor/static/data_hours.csv", row.names = FALSE)
+write.csv(data.file, "liquor/static/data_hours_phone.csv", row.names = FALSE)
 
 
 # -----------------------------------------------------------------------------
@@ -125,7 +129,7 @@ write.csv(data.file, "liquor/static/data_hours.csv", row.names = FALSE)
 # - (Government owned) BC liquor stores are correctly paired up with their hours of operation.
 # - Private liquor stores’ hours of operation is null/not available
 # -----------------------------------------------------------------------------
-data.file <- read.csv("liquor/static/data_hours.csv", stringsAsFactors = FALSE)
+data.file <- read.csv("liquor/static/data_hours_phone.csv", stringsAsFactors = FALSE)
 
 # the hours cell of BC Liquor Store should contain more than 0 character
 # the hours cell of Private Liquor Store and others should contain 0 character
