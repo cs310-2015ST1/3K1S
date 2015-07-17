@@ -3,7 +3,7 @@ from liquor_locator import views
 
 urlpatterns = patterns('',
         url(r'^$', views.index, name='index'),
-        url(r'^checkData/', views.checkData),
+        url(r'^checkData/$', views.checkData, name='checkData'),
         url(r'^register/$', views.register, name='register'), 
         url(r'^session/$', views.user_session, name='session'),
         url(r'^restricted/', views.restricted, name='restricted'),

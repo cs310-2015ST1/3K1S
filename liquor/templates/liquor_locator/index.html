@@ -395,10 +395,14 @@
                     {% if user.is_authenticated %}
                         <div class="form-group">
                             <p class="navbar-text">Hello {{ user.username }}! </p>
+                            {% if user.is_superuser %}
+                            {% csrf_token %}
+                            <a class="btn btn-default" href="/checkData/" role="button" style="margin-top: 7px;">Check Data</a>
+                            {% endif %}
                             <a class="btn btn-default" href="/favorites/" role="button" style="margin-top: 7px;">Favorites</a>
                             <button type="submit" class="btn btn-default" style="margin-top: 7px;">Log out</button>
                         </div>
-                    {% else %}
+                    {% else %} 
                         <div class="form-group" style="margin-top: 7px;">
                             <input type="text" class="form-control" name="username" placeholder="Username">
                         </div>

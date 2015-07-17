@@ -5,7 +5,7 @@ import os
 import urllib2
 from django.utils import timezone
 
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.template import Context, Template
 from liquor_locator.models import LiquorStore, UserProfile, Comment
 from liquor_locator.forms import UserForm, UserProfileForm, CommentForm, EditForm
@@ -15,7 +15,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
 def checkData(request):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     STATIC_PATH = os.path.join(BASE_DIR, 'static')
@@ -35,14 +34,11 @@ def checkData(request):
 
     rowEqual = (row_count_govt == row_count_data)
     str_response = ("Current dataset row count:" + str(row_count_data) + 
-        "\n Dataset from government catalogue row count: " + str(row_count_govt) +
-        "\n Need to update if numbers differ")
-    context_dict = {'rowEqual':rowEqual, 'str_response':str_response}
+        "|Dataset from government catalogue row count: " + str(row_count_govt) +
+        "|Need to update if numbers differ")
+    context_dict = {'str_response':str_response}
     
-    
-    return render(request,
-            'admin/base_site.html',
-            context_dict)
+    return render_to_response('liquor_locator/checkData.html', context_dict)
 
 # def index(request):
 #   # Construct a dictionary to pass to the template engine as its context.

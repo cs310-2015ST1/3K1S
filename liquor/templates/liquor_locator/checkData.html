@@ -1,0 +1,10 @@
+<script>
+	var message = '{{str_response}}';
+	message = message.split("|");
+	var alertbox = "";
+	for (var i = 0; i < message.length; i++) {
+		alertbox += message[i] + '\n';
+	}
+	alert(alertbox);
+	window.location.replace("/");
+</script>
