@@ -109,7 +109,7 @@
 
             {% load pinax_ratings_tags %}
             {% overall_rating liquorstore as the_overall_rating %}
-            {{ the_overall_rating }}
+            <div id="store_rating">{{ the_overall_rating }}</div>
             <div id="user_rating"></div>
             {% user_rating_js request.user.id liquorstore %}
 
