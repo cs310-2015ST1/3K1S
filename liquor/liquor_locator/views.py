@@ -13,7 +13,9 @@ from liquor_locator.forms import UserForm, UserProfileForm, CommentForm, EditFor
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def checkData(request):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     STATIC_PATH = os.path.join(BASE_DIR, 'static')
