@@ -46,7 +46,7 @@ class LiquorStore(models.Model):
 class Comment(models.Model):
     user=models.OneToOneField(User)
     comment = models.CharField(max_length=128)
-    isAnon = models.BooleanField(default=False)
+    isAnonymous = models.BooleanField(default=False)
     createdDate = models.DateTimeField(auto_now_add=True)
     liquorStore = models.ForeignKey(LiquorStore, null=True)
     user = models.ForeignKey(User, null=True)

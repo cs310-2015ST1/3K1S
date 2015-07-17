@@ -18,13 +18,14 @@ class UserProfileForm(forms.ModelForm):
 #<input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
 class CommentForm(forms.ModelForm):
     comment = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-        'id': 'commenter', 'placeholder': 'Comment',
+        'placeholder': 'Comment',
         'aria-describedby': 'addon1'}))
+    isAnonymous = forms.BooleanField(required=False)
 
     class Meta:
         # Provide an association between the ModelForm and a model
         model = Comment
-        fields = ('comment',)
+        fields = ('comment', 'isAnonymous')
 
         # What fields do we want to include in our form?
         # This way we don't need every field in the model present.
@@ -36,8 +37,11 @@ class CommentForm(forms.ModelForm):
         #fields = ('title', 'url', 'views')
 
 class EditForm(forms.ModelForm):
-	comment = forms.CharField(max_length=123, help_text="Edit:", initial="")
+    comment = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
+        'id': 'test_edit', 'placeholder': 'Comment',
+        'aria-describedby': 'addon1'}))
+    isAnonymous = forms.BooleanField(required=False)
 
-	class Meta:
+    class Meta:
 		model = Comment
-		fields = ('comment',)
+		fields = ('comment', 'isAnonymous')

@@ -1,5 +1,8 @@
 import json
 import datetime
+import csv
+import os
+import urllib2
 from django.utils import timezone
 
 from django.shortcuts import render
@@ -11,6 +14,33 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 
+def checkData(request):
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    STATIC_PATH = os.path.join(BASE_DIR, 'static')
+
+    dataFeed = os.path.join(STATIC_PATH, 'data_hours_phone.csv')
+    row_count_data = 0
+    with open(dataFeed, 'rb') as csvfile:
+        row_count_data = sum(1 for row in csvfile)
+
+    url = 'http://www.pssg.gov.bc.ca/lclb/docs-forms/web_lrs.csv'
+    response = urllib2.urlopen(url)
+    cr = csv.reader(response)
+    row_count_govt = 0
+
+    for row in cr:
+        row_count_govt = row_count_govt + 1
+
+    rowEqual = (row_count_govt == row_count_data)
+    str_response = ("Current dataset row count:" + str(row_count_data) + 
+        "\n Dataset from government catalogue row count: " + str(row_count_govt) +
+        "\n Need to update if numbers differ")
+    context_dict = {'rowEqual':rowEqual, 'str_response':str_response}
+    
+    
+    return render(request,
+            'admin/base_site.html',
+            context_dict)
 
 # def index(request):
 #   # Construct a dictionary to pass to the template engine as its context.
@@ -91,6 +121,7 @@ def editComment(request, comment_id, store_id):
     liquorstore = LiquorStore.objects.get(storeHash = store_id)
     comment = Comment.objects.get(pk=comment_id)
     comments = Comment.objects.filter(liquorStore=liquorstore)
+    path = request.path.split("/")
 
     if request.method == 'POST':
         form = EditForm(request.POST, instance=comment)
@@ -102,7 +133,7 @@ def editComment(request, comment_id, store_id):
             
             # probably better to use a redirect here.
             context_dict = {'comments':comments, 'form':form, 'liquorstore': liquorstore}
-            return render(request, 'liquor_locator/store.html', context_dict)
+            return HttpResponseRedirect('/store/' + path[3] + '/')
             
         else:
             print form.errors
@@ -111,7 +142,7 @@ def editComment(request, comment_id, store_id):
 
     context_dict = {'comments': comments, 'form':form, 'liquorstore': liquorstore}
 
-    return render(request, 'liquor_locator/store.html', context_dict)
+    return HttpResponseRedirect('/store/' + path[3] + '/')
 
 def register(request):
     # A boolean value for telling the template whether the registration was successful.

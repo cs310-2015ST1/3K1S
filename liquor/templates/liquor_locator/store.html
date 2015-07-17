@@ -33,12 +33,53 @@
                 document.getElementById("timezoneText").innerHTML = "Pacific time";
             }
         }
-        $("#commenter").keypress(function(event) {
-            if (event.which == 13) {
-                event.preventDefault();
-                $("#comment-form").submit();
-            }
+        
+        $(function() {
+            $('.ecomment').click(function(e) {
+                var name = $(this).attr('class');
+                var saveid = $(this).attr('id');
+                if (name == "btn btn-primary ecomment") {
+                    $('label[for=label' + saveid + "]").each(function() {
+                        if ($(this).children().val().length == 0) {
+                            $(this).children().css('border', '2px solid red');
+                            $(this).children().attr('placeholder', 'Cannot be blank');
+                            e.preventDefault()
+                        }
+                    });
+                }
+            });
         });
+
+        $(function () {
+            $('#new_editor').keypress(function (e) {
+                if(e.keyCode == 13) {
+                    var box = document.getElementById("new_editor").getElementsByClassName("form-control").id_comment;
+                    var text = box.value;
+                    if (text.trim().length <= 0) {
+                        $(box).css('border', '2px solid red');
+                        $(box).attr('placeholder', 'Cannot be blank');
+                        return false;
+                    } else {
+                        $(box).closest('form').submit();
+                    }
+                }
+            });
+        });
+
+        $(function () {
+            $('#comment').on('click', function(e) {
+                e.preventDefault();
+                var box = document.getElementById("new_editor").getElementsByClassName("form-control").id_comment;
+                var text = box.value;
+                if (text.trim().length <= 0) {
+                    $(box).css('border', '2px solid red');
+                    $(box).attr('placeholder', 'Cannot be blank');
+                } else {
+                    $(box).closest('form').submit();
+                }
+            });
+        });
+
     </script>
 
     <title> {{ liquorstore.name }} </title>
@@ -150,7 +191,15 @@
                     {% for comment in comments %}
 
                     <div class = "container">
-                        <h5>{{comment.user}}<i> says </i></h5> <p>{{comment.comment}}</p>
+                        <h5>
+                        {% ifequal comment.isAnonymous True %}
+                            Anonymous
+                        {% else %}
+                            {{comment.user}}
+                        {% endifequal %}
+                        <i> says </i></h5>
+                        <p>{{comment.comment}}</p>
+                        
                         {% if user.is_authenticated %}
                             {% ifequal comment.user request.user %}
                             <p>
@@ -167,20 +216,18 @@
                                             <h4 class="modal-title" id="editboxLabel">Edit comment</h4>
                                         </div>
 
-                                        <form method="post" action="/edit/{{comment.pk}}/{{liquorstore.storeHash}}/">
+                                        <form id="edit_editor" method="post" action="/edit/{{comment.pk}}/{{liquorstore.storeHash}}/">
                                         {% csrf_token %}
                                             <div class="modal-body">
                                                 <div class="input-group">
-                                                    {% for field in form.visible_fields %}
-                                                        {{ field.errors }}
-                                                        {{ field }}
-                                                    {% endfor %}
+                                                    <label for="label{{comment.pk}}"> {{form.comment}} </label>
                                                 </div>
+                                                <p>Anonymous? {{form.isAnonymous}}</p>
                                             </div>
 
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                <button type="submit" id="{{comment.pk}}" class="btn btn-primary ecomment">Save changes</button>
                                             </div>
                                         </form>
                                     </div>
@@ -197,23 +244,20 @@
                     {% endfor %}
 
                     {% if user.is_authenticated %}
-                    <form id="comment-form" method="post" action="/store/{{liquorstore.storeHash}}/">
+                    <form id="new_editor" method="post" action="/store/{{liquorstore.storeHash}}/">
                     {% csrf_token %}
+                    <p>Anonymous? {{form.isAnonymous}}</p>
                         <div class="input-group">
                             <span class="input-group-addon" id="addon1">{{ user.username }}</span>
-                                {% for field in form.visible_fields %}
-                                    {{ field.errors }}
-                                    {{ field }}
-                                {% endfor %}
-                                <span class="input-group-addon">
-                                    Anonymous?
-                                </span>  
+                                    {{ form.comment }}
+                            <span class="input-group-addon" id="commentbox">
+                                <a href="#" id="comment"> Comment </a>
+                            </span>  
                         </div>
                     </form>
+
                     {% else %}
                         <h3>Must be a registered user to put comments in</h3>
-                        <a href="/register/">Register Here</a><br />
-                        <a href="/login/">Login</a><br />
                     {% endif %}
 
                         
