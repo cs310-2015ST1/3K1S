@@ -38,7 +38,7 @@ def checkData(request):
         "|Need to update if numbers differ")
     context_dict = {'str_response':str_response}
     
-    return render_to_response('liquor_locator/checkData.html', context_dict)
+    return render(request,'liquor_locator/checkData.html', context_dict)
 
 # def index(request):
 #   # Construct a dictionary to pass to the template engine as its context.
