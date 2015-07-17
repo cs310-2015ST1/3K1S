@@ -355,6 +355,27 @@
                 document.getElementById("timezoneText").innerHTML = "Pacific time";
             }
         }
+
+        function test_markers() {
+            for (var i = 0; i < markers['BC Liquor Store'].length; i++) {
+                var a = 'http://maps.google.com/mapfiles/marker.png';
+                var b = 'http://maps.google.com/mapfiles/marker_orange.png';
+                var c = 'http://maps.google.com/mapfiles/marker_green.png';
+                var icon = markers['BC Liquor Store'][i].icon;
+                if (icon != a && icon != b && icon != c) return false;
+            }
+            for (var i = 0; i < markers['Private Liquor Store'].length; i++) {
+                var a = 'http://maps.google.com/mapfiles/marker_purple.png';
+                var icon = markers['Private Liquor Store'][i].icon;
+                if (icon != a) return false;
+            }
+            for (var i = 0; i < markers['Proposed Store Location'].length; i++) {
+                var a = 'http://maps.google.com/mapfiles/marker_purple.png';
+                var icon = markers['Proposed Store Location'][i].icon;
+                if (icon != a) return false;
+            }
+            return true;
+        }
     </script>
 
     <title> 3K1S </title>
