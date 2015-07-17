@@ -1,4 +1,6 @@
 # 3K1S
+Check it out at: 3k1s.pythonanywhere.com
+
 
 tango_with_django_project used for back-bone template for our project
  * now runs on Django 1.8 with Python 2.7.5
