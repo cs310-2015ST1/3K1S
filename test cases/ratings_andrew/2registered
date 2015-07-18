@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://3k1s.pythonanywhere.com/" />
-<title>Test that the “User” data is correctly stored in the server</title>
+<title>2registered</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test that the “User” data is correctly stored in the server</td></tr>
+<tr><td rowspan="1" colspan="3">2registered</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -19,28 +19,59 @@
 <tr>
 	<td>type</td>
 	<td>name=username</td>
-	<td>atest</td>
+	<td>testicle5</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>name=password</td>
-	<td>1234</td>
+	<td>tester</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td>selectWindow</td>
+	<td>null</td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>css=div.form-group &gt; p.navbar-text</td>
-	<td>Hello atest!</td>
+	<td>click</td>
+	<td>link=List</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=5</td>
+	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
+	<td>link=BANJO'S LIQUOR STORE</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=img[alt=&quot;5&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td>tester</td>
+</tr>
+<tr>
+	<td>refresh</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>id=store_rating</td>
+	<td>5.0</td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>css=button.btn.btn-default</td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
